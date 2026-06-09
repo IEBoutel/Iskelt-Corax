@@ -9,11 +9,11 @@ Iskelt Corax is currently in an early stage of development and likely still cont
 
 ## Documentation
 
-Documentation can be found [here](#meta/docs.md).
+Documentation can be found [here](meta/docs.md).
 
 ## Benchmarks
 
-The following benchmarks are for the latest version and were calculated on an AMD Ryzen 9950HX platform in the starting position. Benchmarks are kept for each version [here](#meta/benchmark_history.md).
+The following benchmarks are for the latest version and were calculated on an AMD Ryzen 9950HX platform in the starting position. Benchmarks are kept for each version [here](meta/benchmark_history.md).
 
 | Metric | Value |
 | ------ | ----- |
