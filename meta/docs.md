@@ -36,4 +36,4 @@
 | `(w\|b)qsrm` | Has the (white\|black) queen-side rook moved? |
 | `(w\|b)c` | (white\|black) castle state. 0 for no castle, 1 for king-side castle, and 2 for queen-side castle |
 | `t` | Player to move. 0 for white and 1 for black |
-| `es` | Square of pawn that can be taken via en-passant. 0 if none can be |
+| `es` | Square of pawn that can be taken via en-passant. 0 if en-passant is unavailable |
