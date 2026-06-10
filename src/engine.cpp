@@ -393,19 +393,8 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 
         if (board.applyMove(moves[i])) {
             legal++;
-            uint8_t r = 1;
-            int lb = -beta;
 
-            if (i > 5 && d > 2 && !check && !capture) {
-                r++;
-                lb = -1 - alpha;
-            }
-
-            int score = -determineBestMove(d - r, NULL, lb, -alpha, ply + 1);
-
-            if (r > 1 && score > alpha) {
-                score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
-            }
+            int score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
 
             if (score == STALEMATE) {
                 score = -STALEMATE;
