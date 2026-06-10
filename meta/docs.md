@@ -18,6 +18,7 @@
 | `plist` | Lists pseudo-legal moves in UCI format |
 | `list` | Lists legal moves in UCI format |
 | `state` | Retrieve a board state value. See [Board State](#board-state) |
+| `help` | Returns the command list |
 
 ## CLI Options
 
