@@ -299,10 +299,12 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     }
 
     if (board.history_n > 7) {
-        if (board.history[board.history_n - 1].move.to == board.history[board.history_n - 5].move.to && board.history[board.history_n - 1].move.from == board.history[board.history_n - 5].move.from &&
+        if (
+            board.history[board.history_n - 1].move.to == board.history[board.history_n - 5].move.to && board.history[board.history_n - 1].move.from == board.history[board.history_n - 5].move.from &&
             board.history[board.history_n - 2].move.to == board.history[board.history_n - 6].move.to && board.history[board.history_n - 2].move.from == board.history[board.history_n - 6].move.from &&
             board.history[board.history_n - 3].move.to == board.history[board.history_n - 7].move.to && board.history[board.history_n - 3].move.from == board.history[board.history_n - 7].move.from &&
-            board.history[board.history_n - 4].move.to == board.history[board.history_n - 8].move.to && board.history[board.history_n - 4].move.from == board.history[board.history_n - 8].move.from) {
+            board.history[board.history_n - 4].move.to == board.history[board.history_n - 8].move.to && board.history[board.history_n - 4].move.from == board.history[board.history_n - 8].move.from
+        ) {
             return -STALEMATE;
         }
     }
@@ -388,9 +390,23 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
         std::swap(moves[i], moves[best]);
         std::swap(scores[i], scores[best]);
 
+        bool capture = getBit(board.occupied[AO], moves[i].to);
+
         if (board.applyMove(moves[i])) {
             legal++;
-            int score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
+            uint8_t r = 1;
+            int lb = -beta;
+
+            if (i > 5 && d > 2 && !check && !capture) {
+                r++;
+                lb = -1 - alpha;
+            }
+
+            int score = -determineBestMove(d - r, NULL, lb, -alpha, ply + 1);
+
+            if (r > 1 && score > alpha) {
+                score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
+            }
 
             if (score == STALEMATE) {
                 score = -STALEMATE;
