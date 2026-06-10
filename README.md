@@ -18,12 +18,12 @@ The following benchmarks are for the latest version and were calculated on an AM
 | Metric | Value |
 | ------ | ----- |
 | Perft(7) | 2m27s |
-| Move search depth in 1s (excl. quiesence) | 8 plies |
-| Move search depth in 5s (excl. quiesence) | 10 plies |
+| Move search depth in 1s (excl. quiesence) | 10 plies |
+| Move search depth in 5s (excl. quiesence) | 11 plies |
 
 ## Versions
 
-The latest version is v0.0.0
+The latest version is v0.1.0
 
 Versions of Iskelt Corax take the form "v{major}.{minor}.{micro}". The major version increments on significant changes. The minor version increments upon the addition of feautures. The micro version increments upon bug fixes and other such changes that do not affect the intended behaviour.
 
