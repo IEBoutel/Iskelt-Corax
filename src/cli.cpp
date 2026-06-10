@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <sstream>
 
 std::string LICENSE_STRING = "Iskelt Corax  Copyright (C) 2026  Iskander Edward Boutel\n";
+std::string USAGE_STRING = "\nCommands:\n  quit\n  new\n  opt <option> [value]\n  move <move>...\n  back [number]\n  gen [apply]\n  sgen [apply]\n  perft <depth>\n  eval\n  piece <piece>\n  hash\n  plist\n  list\n  state\n  help\n";
 
 void CLI::commandQuit (void) {
     exit(0);
@@ -212,6 +213,10 @@ std::string CLI::commandOpt (std::string option) {
     return "BAD OPT";
 }
 
+std::string CLI::commandHelp (void) {
+    return USAGE_STRING;
+}
+
 void CLI::launch (void) {
     std::cout << LICENSE_STRING << std::endl;
 
@@ -300,6 +305,8 @@ void CLI::launch (void) {
             std::cout << commandState(words[1]) << std::endl;
         } else if (words[0] == "hash") {
             std::cout << commandHash() << std::endl;
+        } else if (words[0] == "help") {
+            std::cout << commandHelp() << std::endl;
         } else {
             std::cout << "BAD CMD" << std::endl;
         }
