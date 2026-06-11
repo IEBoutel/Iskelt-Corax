@@ -27,6 +27,7 @@ int P_DP = -25;                                      // Double pawn
 int P_IP = -25;                                      // Isolated pawn
 int P_PP[8] = {0, 5, 10, 20, 40, 60, 80, 100};       // Passed pawn bonus (rank based)
 int B_DB = 25;                                       // Double bishop
+int R_OF = 15;                                       // Semi-open rook file (doubles for full open)
 int K_DP[8] = {0, 0, -5, -20, -40, -40, -40, -40};   // King defender pawn (castles) (rank based)
 int K_MP = -50;                                      // Missing pawn (castle)
 int K_CB = 50;                                       // Castle bonus
@@ -184,6 +185,15 @@ int Engine::evaluateWhitePosition (void) {
         clrBit(rooks, i);
 
         score += PS[3] + MG_R_PST[i];
+        uint64_t file_mask = getFileMask(i % 8);
+
+        if (!(file_mask & board.pieces[WP])) {
+            score += R_OF;
+        }
+
+        if (!(file_mask & board.pieces[BP])) {
+            score += R_OF;
+        }
     }
 
     while (queens) {
@@ -262,6 +272,15 @@ int Engine::evaluateBlackPosition (void) {
         clrBit(rooks, i);
 
         score += PS[3] + MG_R_PST[i];
+        uint64_t file_mask = getFileMask(i % 8);
+
+        if (!(file_mask & board.pieces[WP])) {
+            score += R_OF;
+        }
+
+        if (!(file_mask & board.pieces[BP])) {
+            score += R_OF;
+        }
     }
 
     while (queens) {
