@@ -366,6 +366,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     }
 
     bool check = board.state.t ? board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK])) : board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]));
+    uint8_t phase = (PW[0] * __builtin_popcountll(board.pieces[WN] | board.pieces[BN])) + (PW[1] * __builtin_popcountll(board.pieces[WB] | board.pieces[BB])) + (PW[2] * __builtin_popcountll(board.pieces[WR] | board.pieces[BR])) + (PW[3] * __builtin_popcountll(board.pieces[WQ] | board.pieces[BQ]));
 
     if (d > 2 && !check) {
         board.state.t = !board.state.t;
@@ -385,7 +386,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     int scores[256];
 
     for (uint8_t i = 0; i < n; i++) {
-        scores[i] = scoreMove(moves[i], ply);
+        scores[i] = scoreMove(moves[i], ply, phase);
 
         if (moves[i].to == entry.move.to && moves[i].from == entry.move.from) {
             scores[i] += 100000;
@@ -508,6 +509,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 
 int Engine::quiesce (int alpha, int beta, int ply) {
     bool check = board.state.t ? board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK])) : board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]));
+    uint8_t phase = (PW[0] * __builtin_popcountll(board.pieces[WN] | board.pieces[BN])) + (PW[1] * __builtin_popcountll(board.pieces[WB] | board.pieces[BB])) + (PW[2] * __builtin_popcountll(board.pieces[WR] | board.pieces[BR])) + (PW[3] * __builtin_popcountll(board.pieces[WQ] | board.pieces[BQ]));
     int cs = evaluatePosition();
 
     if (!check) {
@@ -528,7 +530,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
     int scores[256];
 
     for (uint8_t i = 0; i < n; i++) {
-        scores[i] = scoreMove(moves[i], ply);
+        scores[i] = scoreMove(moves[i], ply, phase);
     }
 
     for (uint8_t i = 0; i < n; i++) {
@@ -623,7 +625,7 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
     return 0;   // This should never be reached
 }
 
-int Engine::scoreMove (Move &move, int ply) {
+int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
     int score = 0;
 
     if (move.to == killers[ply][0].to && move.from == killers[ply][0].from) {
@@ -697,6 +699,46 @@ int Engine::scoreMove (Move &move, int ply) {
                 score += 9000;
                 break;
         }
+    }
+
+    switch (move.piece) {
+        case WP:
+            score += MG_WP_PST[move.to];
+            break;
+        
+        case BP:
+            score += MG_BP_PST[move.to];
+            break;
+        
+        case WN:
+        case BN:
+            score += MG_N_PST[move.to];
+            break;
+
+        case WB:
+        case BB:
+            score += MG_B_PST[move.to];
+            break;
+
+        case WR:
+        case BR:
+            score += MG_R_PST[move.to];
+            break;
+        
+        case WQ:
+        case BQ:
+            score += MG_Q_PST[move.to];
+            break;
+        
+        case WK:
+            score += (phase * MG_WK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
+            break;
+
+        case BK:
+            score += (phase * MG_BK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
+            break;
+        
+        default:;
     }
 
     return score;
