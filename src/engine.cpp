@@ -417,14 +417,17 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
             int lb = -beta;
             bool ncheck = board.state.t ? board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK])) : board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]));
 
+            if (i) {
+                lb = -1 - alpha;
+            }
+
             if (i > 6 && d > 2 && !check && !capture && !ncheck) {
                 r++;
-                lb = -1 - alpha;
             }
 
             int score = -determineBestMove(d - r, NULL, lb, -alpha, ply + 1);
 
-            if (r > 1 && score > alpha) {
+            if (i && score > alpha) {
                 score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
             }
 
