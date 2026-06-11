@@ -316,17 +316,6 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
         return TIME_BREAK;
     }
 
-    if (board.history_n > 7) {
-        if (
-            board.history[board.history_n - 1].move.to == board.history[board.history_n - 5].move.to && board.history[board.history_n - 1].move.from == board.history[board.history_n - 5].move.from &&
-            board.history[board.history_n - 2].move.to == board.history[board.history_n - 6].move.to && board.history[board.history_n - 2].move.from == board.history[board.history_n - 6].move.from &&
-            board.history[board.history_n - 3].move.to == board.history[board.history_n - 7].move.to && board.history[board.history_n - 3].move.from == board.history[board.history_n - 7].move.from &&
-            board.history[board.history_n - 4].move.to == board.history[board.history_n - 8].move.to && board.history[board.history_n - 4].move.from == board.history[board.history_n - 8].move.from
-        ) {
-            return -STALEMATE;
-        }
-    }
-
     int oalpha = alpha;
     uint64_t hash = board.getHash();
     TTEntry entry = tt[hash & TT_MAX];
