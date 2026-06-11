@@ -699,46 +699,46 @@ int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
                 score += 9000;
                 break;
         }
-    }
+    } else {
+        switch (move.piece) {
+            case WP:
+                score += MG_WP_PST[move.to];
+                break;
+            
+            case BP:
+                score += MG_BP_PST[move.to];
+                break;
+            
+            case WN:
+            case BN:
+                score += MG_N_PST[move.to];
+                break;
 
-    switch (move.piece) {
-        case WP:
-            score += MG_WP_PST[move.to];
-            break;
-        
-        case BP:
-            score += MG_BP_PST[move.to];
-            break;
-        
-        case WN:
-        case BN:
-            score += MG_N_PST[move.to];
-            break;
+            case WB:
+            case BB:
+                score += MG_B_PST[move.to];
+                break;
 
-        case WB:
-        case BB:
-            score += MG_B_PST[move.to];
-            break;
+            case WR:
+            case BR:
+                score += MG_R_PST[move.to];
+                break;
+            
+            case WQ:
+            case BQ:
+                score += MG_Q_PST[move.to];
+                break;
+            
+            case WK:
+                score += (phase * MG_WK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
+                break;
 
-        case WR:
-        case BR:
-            score += MG_R_PST[move.to];
-            break;
-        
-        case WQ:
-        case BQ:
-            score += MG_Q_PST[move.to];
-            break;
-        
-        case WK:
-            score += (phase * MG_WK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
-            break;
-
-        case BK:
-            score += (phase * MG_BK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
-            break;
-        
-        default:;
+            case BK:
+                score += (phase * MG_BK_PST[move.to] + (MAX_PHASE - phase) * EG_K_PST[move.to]) / MAX_PHASE;
+                break;
+            
+            default:;
+        }
     }
 
     return score;
