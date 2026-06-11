@@ -409,7 +409,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
         std::swap(moves[i], moves[best]);
         std::swap(scores[i], scores[best]);
 
-        bool capture = getBit(board.occupied[AO], moves[i].to) || moves[i].ep;
+        bool capture = board.isCapture(moves[i]);
 
         if (board.applyMove(moves[i])) {
             legal++;
@@ -445,7 +445,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
                 max = score;
                 c = i;
 
-                if (!(getBit(board.occupied[AO], moves[i].to) || moves[i].ep)) {
+                if (!capture) {
                     if (killers[ply][0].to != moves[i].to || killers[ply][0].from != moves[i].from) {
                         killers[ply][1] = killers[ply][0];
                         killers[ply][0] = moves[i];
@@ -546,7 +546,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
         if (board.applyMove(moves[i])) {
             legal++;
 
-            if ((board.state.t ? board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK])) : board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]))) || check || getBit(board.occupied[AO], moves[i].to) || moves[i].ep) {
+            if ((board.state.t ? board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK])) : board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]))) || check || board.isCapture(moves[i])) {
                 int score = -quiesce(-beta, -alpha, ply + 1);
 
                 if (score >= beta) {
@@ -631,7 +631,7 @@ int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
 
     score += history[board.state.t][move.to][move.from];
 
-    if (getBit(board.occupied[AO], move.to)) {
+    if (board.isCapture(move)) {
         uint8_t taker = move.piece > WK ? move.piece - 6 : move.piece;
 
         switch (taker) {
@@ -663,13 +663,17 @@ int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
 
         uint8_t taken;
 
-        for (taken = WP; taken < BK; taken++) {
-            if (getBit(board.pieces[taken], move.to)) {
-                break;
+        if (move.ep) {
+            taken = WP;
+        } else {
+            for (taken = WP; taken < BK; taken++) {
+                if (getBit(board.pieces[taken], move.to)) {
+                    break;
+                }
             }
-        }
 
-        taken = taken > WK ? taken - 6 : taken;
+            taken = taken > WK ? taken - 6 : taken;
+        }
 
         switch (taken) {
             case WP:

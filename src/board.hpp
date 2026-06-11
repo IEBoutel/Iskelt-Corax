@@ -161,6 +161,8 @@ class Board {
         std::string moveToString (Move &move);   // UCI
 
         uint64_t perft (uint8_t n);
+
+        inline bool isCapture (Move m) {return getBit(occupied[AO], m.to) || m.ep;}
 };
 
 #endif
