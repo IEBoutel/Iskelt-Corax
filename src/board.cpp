@@ -941,13 +941,7 @@ bool Board::applyMove (std::string &move) {
 
     m.from = (move[0] - 'a') + ((move[1] - '1') * 8);
     m.to = (move[2] - 'a') + ((move[3] - '1') * 8);
-
-    for (uint8_t i = WP; i <= BK; i++) {
-        if (getBit(pieces[i], m.from)) {
-            m.piece = i;
-            break;
-        }
-    }
+    m.piece = getPieceAt(m.from);
 
     if (move.length() == 5) {
         switch (move[4]) {
@@ -1077,4 +1071,14 @@ uint64_t Board::getHash (void) {
     }
 
     return hash ^ (zobrist[780] * state.t);
+}
+
+uint8_t Board::getPieceAt (uint8_t square) {
+    for (uint8_t p = WP; p <= BK; p++) {
+        if (getBit(pieces[p], square)) {
+            return p;
+        }
+    }
+
+    return 255;   // Should never be reached
 }

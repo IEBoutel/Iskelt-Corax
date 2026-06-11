@@ -163,6 +163,7 @@ class Board {
         uint64_t perft (uint8_t n);
 
         inline bool isCapture (Move m) {return getBit(occupied[AO], m.to) || m.ep;}
+        uint8_t getPieceAt (uint8_t square);
 };
 
 #endif

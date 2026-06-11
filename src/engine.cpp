@@ -666,12 +666,7 @@ int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
         if (move.ep) {
             taken = WP;
         } else {
-            for (taken = WP; taken < BK; taken++) {
-                if (getBit(board.pieces[taken], move.to)) {
-                    break;
-                }
-            }
-
+            taken = board.getPieceAt(move.to);
             taken = taken > WK ? taken - 6 : taken;
         }
 
