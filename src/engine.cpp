@@ -321,7 +321,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     TTEntry entry = tt[hash & TT_MAX];
     bool match = entry.hash == hash;
 
-    if (match && entry.depth > d) {
+    if (match && entry.depth >= d) {
         switch (entry.type) {
             case LOWER:
                 alpha = std::max(alpha, entry.score);
