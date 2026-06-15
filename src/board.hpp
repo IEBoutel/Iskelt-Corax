@@ -100,6 +100,7 @@ class Board {
 
         History history[1024];
         uint16_t history_n = 0;
+        uint16_t bmc = 0;   // Base move count (for FEN setup)
 
         uint64_t pawn_attacks[2][64] = {0};
         uint64_t knight_attacks[64] = {0};
