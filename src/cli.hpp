@@ -24,11 +24,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 class CLI {
     public:
-        Engine engine;
+        Engine *engine;
 
         int time = 5000;
         uint8_t min_depth = 5;
         uint8_t max_depth = 255;
+
+        CLI (void);
 
         void commandQuit (void);
         void commandNew (void);
@@ -47,6 +49,7 @@ class CLI {
         std::string commandState (std::string v);
         std::string commandHelp (void);
         std::string commandPos (void);
+        std::string commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves);
 
         void launch (void);
 };

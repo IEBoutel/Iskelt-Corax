@@ -23,12 +23,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 std::string LICENSE_STRING = "Iskelt Corax  Copyright (C) 2026  Iskander Edward Boutel\n";
 std::string USAGE_STRING = "\nCommands:\n  quit\n  new\n  opt <option> [value]\n  move <move>...\n  back [number]\n  gen [apply]\n  sgen [apply]\n  perft <depth>\n  eval\n  piece <piece>\n  hash\n  plist\n  list\n  state\n  help\n";
 
+CLI::CLI (void) {
+    engine = new Engine;
+}
+
 void CLI::commandQuit (void) {
     exit(0);
 }
 
 void CLI::commandNew (void) {
-    engine = *(new Engine);
+    delete engine;
+    engine = new Engine;
 }
 
 std::string CLI::commandOpt (std::string option, std::string value) {
@@ -55,8 +60,8 @@ std::string CLI::commandOpt (std::string option, std::string value) {
 
 std::string CLI::commandMove (std::vector<std::string> moves) {
     for (auto &move : moves) {
-        if (!engine.board.applyMove(move)) {
-            engine.board.undoMove();
+        if (!engine->board.applyMove(move)) {
+            engine->board.undoMove();
 
             return std::string("BAD MOVE: ") + move;
         }
@@ -68,76 +73,76 @@ std::string CLI::commandMove (std::vector<std::string> moves) {
 std::string CLI::commandGen (std::string apply) {
     Move move;
     int depth;
-    int score = engine.generateMove(time, min_depth, max_depth, &move, &depth);
+    int score = engine->generateMove(time, min_depth, max_depth, &move, &depth);
 
     if (apply == "apply") {
-        engine.board.applyMove(move);
+        engine->board.applyMove(move);
     }
 
-    return std::string("Move: ") + engine.board.moveToString(move) + ", Score: " + std::to_string(score) + ", Final Depth: " + std::to_string(depth) + ", Leaves: " + std::to_string(engine.n);
+    return std::string("Move: ") + engine->board.moveToString(move) + ", Score: " + std::to_string(score) + ", Final Depth: " + std::to_string(depth) + ", Leaves: " + std::to_string(engine->n);
 }
 
 std::string CLI::commandSGen (std::string apply) {
     Move move;
     int depth;
-    int score = engine.generateMove(time, min_depth, max_depth, &move, &depth);
+    int score = engine->generateMove(time, min_depth, max_depth, &move, &depth);
 
     if (apply == "apply") {
-        engine.board.applyMove(move);
+        engine->board.applyMove(move);
     }
 
-    return engine.board.moveToString(move);
+    return engine->board.moveToString(move);
 }
 
 std::string CLI::commandBack (std::string n) {
     for (int i = 0; i < std::stoi(n); i++) {
-        if (!engine.board.history_n) {
+        if (!engine->board.history_n) {
             return std::string("BAD N: ") + std::to_string(i + 1);
         }
 
-        engine.board.undoMove();
+        engine->board.undoMove();
     }
 
     return "OK";
 }
 
 std::string CLI::commandPerft (std::string d) {
-    return std::to_string(engine.board.perft(std::stoi(d)));
+    return std::to_string(engine->board.perft(std::stoi(d)));
 }
 
 std::string CLI::commandEvaluate (void) {
-    return std::to_string(engine.evaluatePosition()) + (engine.board.state.t == WHITE ? "W" : "B");
+    return std::to_string(engine->evaluatePosition()) + (engine->board.state.t == WHITE ? "W" : "B");
 }
 
 std::string CLI::commandHash (void) {
-    return std::to_string(engine.board.getHash());
+    return std::to_string(engine->board.getHash());
 }
 
 std::string CLI::commandPiece (std::string piece) {
     if (piece == "WP") {
-        return std::to_string(engine.board.pieces[WP]);
+        return std::to_string(engine->board.pieces[WP]);
     } else if (piece == "WN") {
-        return std::to_string(engine.board.pieces[WN]);
+        return std::to_string(engine->board.pieces[WN]);
     } else if (piece == "WB") {
-        return std::to_string(engine.board.pieces[WB]);
+        return std::to_string(engine->board.pieces[WB]);
     } else if (piece == "WR") {
-        return std::to_string(engine.board.pieces[WR]);
+        return std::to_string(engine->board.pieces[WR]);
     } else if (piece == "WQ") {
-        return std::to_string(engine.board.pieces[WQ]);
+        return std::to_string(engine->board.pieces[WQ]);
     } else if (piece == "WK") {
-        return std::to_string(engine.board.pieces[WK]);
+        return std::to_string(engine->board.pieces[WK]);
     } else if (piece == "BP") {
-        return std::to_string(engine.board.pieces[BP]);
+        return std::to_string(engine->board.pieces[BP]);
     } else if (piece == "BN") {
-        return std::to_string(engine.board.pieces[BN]);
+        return std::to_string(engine->board.pieces[BN]);
     } else if (piece == "BB") {
-        return std::to_string(engine.board.pieces[BB]);
+        return std::to_string(engine->board.pieces[BB]);
     } else if (piece == "BR") {
-        return std::to_string(engine.board.pieces[BR]);
+        return std::to_string(engine->board.pieces[BR]);
     } else if (piece == "BQ") {
-        return std::to_string(engine.board.pieces[BQ]);
+        return std::to_string(engine->board.pieces[BQ]);
     } else if (piece == "BK") {
-        return std::to_string(engine.board.pieces[BK]);
+        return std::to_string(engine->board.pieces[BK]);
     } else {
         return "BAD PIECE";
     }
@@ -146,10 +151,10 @@ std::string CLI::commandPiece (std::string piece) {
 std::string CLI::commandPList (void) {
     std::string output;
     Move moves[256];
-    uint8_t n = engine.board.generatePseudoLegalMoves(moves);
+    uint8_t n = engine->board.generatePseudoLegalMoves(moves);
 
     for (uint8_t i = 0; i < n; i++) {
-        output += engine.board.moveToString(moves[i]) + " ";
+        output += engine->board.moveToString(moves[i]) + " ";
     }
 
     return output;
@@ -158,14 +163,14 @@ std::string CLI::commandPList (void) {
 std::string CLI::commandList (void) {
     std::string output;
     Move moves[256];
-    uint8_t n = engine.board.generatePseudoLegalMoves(moves);
+    uint8_t n = engine->board.generatePseudoLegalMoves(moves);
 
     for (uint8_t i = 0; i < n; i++) {
-        if (engine.board.applyMove(moves[i])) {
-            output += engine.board.moveToString(moves[i]) + " ";
+        if (engine->board.applyMove(moves[i])) {
+            output += engine->board.moveToString(moves[i]) + " ";
         }
 
-        engine.board.undoMove();
+        engine->board.undoMove();
     }
 
     return output;
@@ -173,25 +178,25 @@ std::string CLI::commandList (void) {
 
 std::string CLI::commandState (std::string v) {
     if (v == "wkm") {
-        return std::to_string(engine.board.state.wkm);
+        return std::to_string(engine->board.state.wkm);
     } else if (v == "wksrm") {
-        return std::to_string(engine.board.state.wksrm);
+        return std::to_string(engine->board.state.wksrm);
     } else if (v == "wqsrm") {
-        return std::to_string(engine.board.state.wqsrm);
+        return std::to_string(engine->board.state.wqsrm);
     } else if (v == "wc") {
-        return std::to_string(engine.board.state.wc);
+        return std::to_string(engine->board.state.wc);
     } else if (v == "bkm") {
-        return std::to_string(engine.board.state.bkm);
+        return std::to_string(engine->board.state.bkm);
     } else if (v == "bksrm") {
-        return std::to_string(engine.board.state.bksrm);
+        return std::to_string(engine->board.state.bksrm);
     } else if (v == "bqsrm") {
-        return std::to_string(engine.board.state.bqsrm);
+        return std::to_string(engine->board.state.bqsrm);
     } else if (v == "bc") {
-        return std::to_string(engine.board.state.bc);
+        return std::to_string(engine->board.state.bc);
     } else if (v == "t") {
-        return std::to_string(engine.board.state.t);
+        return std::to_string(engine->board.state.t);
     } else if (v == "es") {
-        return std::to_string(engine.board.state.es);
+        return std::to_string(engine->board.state.es);
     } else {
         return "BAD VALUE";
     }
@@ -223,7 +228,7 @@ std::string CLI::commandPos (void) {
 
     for (uint8_t r = 7; r < 255; r--) {
         for (uint8_t f = 0; f < 8; f++) {
-            uint8_t piece = engine.board.getPieceAt(r * 8 + f);
+            uint8_t piece = engine->board.getPieceAt(r * 8 + f);
 
             if (piece != 255 && n) {
                 output += std::to_string(n);
@@ -295,12 +300,12 @@ std::string CLI::commandPos (void) {
         }
     }
 
-    output += std::string(" ") + (engine.board.state.t ? "b" : "w") + std::string(" ");
+    output += std::string(" ") + (engine->board.state.t ? "b" : "w") + std::string(" ");
     
-    bool wks = !engine.board.state.wc && !engine.board.state.wkm && !engine.board.state.wksrm;
-    bool wqs = !engine.board.state.wc && !engine.board.state.wkm && !engine.board.state.wqsrm;
-    bool bks = !engine.board.state.bc && !engine.board.state.bkm && !engine.board.state.bksrm;
-    bool bqs = !engine.board.state.bc && !engine.board.state.bkm && !engine.board.state.bqsrm;
+    bool wks = !engine->board.state.wc && !engine->board.state.wkm && !engine->board.state.wksrm;
+    bool wqs = !engine->board.state.wc && !engine->board.state.wkm && !engine->board.state.wqsrm;
+    bool bks = !engine->board.state.bc && !engine->board.state.bkm && !engine->board.state.bksrm;
+    bool bqs = !engine->board.state.bc && !engine->board.state.bkm && !engine->board.state.bqsrm;
 
     if (wks) {
         output += "K";
@@ -324,16 +329,135 @@ std::string CLI::commandPos (void) {
 
     output += " ";
 
-    if (engine.board.state.es) {
-        output += 'a' + ((engine.board.state.es + (engine.board.state.t ? -8 : 8)) % 8);
-        output += '1' + ((engine.board.state.es + (engine.board.state.t ? -8 : 8)) / 8);
+    if (engine->board.state.es) {
+        output += 'a' + ((engine->board.state.es + (engine->board.state.t ? -8 : 8)) % 8);
+        output += '1' + ((engine->board.state.es + (engine->board.state.t ? -8 : 8)) / 8);
     } else {
         output += "-";
     }
 
-    output += " " + std::to_string(engine.board.state.hmc) + " " + std::to_string(1 + engine.board.history_n / 2);
+    output += " " + std::to_string(engine->board.state.hmc) + " " + std::to_string(1 + (engine->board.history_n + engine->board.bmc) / 2);
 
     return output;
+}
+
+std::string CLI::commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves) {
+    auto ne = new Engine;
+    memset(ne->board.pieces, 0, sizeof(ne->board.pieces));
+
+    uint8_t r = 7;
+    uint8_t f = 0;
+
+    for (char &c : layout) {
+        if (c >= '1' && c <= '8') {
+            f += c - '0';
+            continue;
+        }
+
+        switch (c) {
+            case 'P':
+                setBit(ne->board.pieces[WP], r * 8 + f);
+                break;
+            
+            case 'N':
+                setBit(ne->board.pieces[WN], r * 8 + f);
+                break;
+
+            case 'B':
+                setBit(ne->board.pieces[WB], r * 8 + f);
+                break;
+
+            case 'R':
+                setBit(ne->board.pieces[WR], r * 8 + f);
+                break;
+
+            case 'Q':
+                setBit(ne->board.pieces[WQ], r * 8 + f);
+                break;
+
+            case 'K':
+                setBit(ne->board.pieces[WK], r * 8 + f);
+                break;
+            
+            case 'p':
+                setBit(ne->board.pieces[BP], r * 8 + f);
+                break;
+            
+            case 'n':
+                setBit(ne->board.pieces[BN], r * 8 + f);
+                break;
+
+            case 'b':
+                setBit(ne->board.pieces[BB], r * 8 + f);
+                break;
+
+            case 'r':
+                setBit(ne->board.pieces[BR], r * 8 + f);
+                break;
+
+            case 'q':
+                setBit(ne->board.pieces[BQ], r * 8 + f);
+                break;
+
+            case 'k':
+                setBit(ne->board.pieces[BK], r * 8 + f);
+                break;
+            
+            case '/':
+                r--;
+                f = 255;
+                break;
+        }
+
+        f++;
+    }
+
+    ne->board.occupied[WO] = ne->board.pieces[WP] | ne->board.pieces[WN] | ne->board.pieces[WB] | ne->board.pieces[WR] | ne->board.pieces[WQ] | ne->board.pieces[WK];
+    ne->board.occupied[BO] = ne->board.pieces[BP] | ne->board.pieces[BN] | ne->board.pieces[BB] | ne->board.pieces[BR] | ne->board.pieces[BQ] | ne->board.pieces[BK];
+    ne->board.occupied[AO] = ne->board.occupied[WO] | ne->board.occupied[BO];
+    ne->board.state.t = turn == "b";
+
+    if (castling != "-") {
+        for (char &c : castling) {
+            switch (c) {
+                case 'K':
+                    ne->board.state.wc = 0;
+                    ne->board.state.wkm = 0;
+                    ne->board.state.wksrm = 0;
+                    break;
+                
+                case 'Q':
+                    ne->board.state.wc = 0;
+                    ne->board.state.wkm = 0;
+                    ne->board.state.wqsrm = 0;
+                    break;
+
+                case 'k':
+                    ne->board.state.bc = 0;
+                    ne->board.state.bkm = 0;
+                    ne->board.state.bksrm = 0;
+                    break;
+
+                case 'q':
+                    ne->board.state.bc = 0;
+                    ne->board.state.bkm = 0;
+                    ne->board.state.bqsrm = 0;
+                    break;
+            }
+        }
+    }
+
+    if (enpassant != "-") {
+        ne->board.state.es = ((enpassant[1] - '1') * 8) + (enpassant[0] - 'a') + (ne->board.state.t ? 8 : -8);
+    }
+
+    ne->board.state.hmc = std::stoi(half_moves);
+    ne->board.bmc = (std::stoi(full_moves) - 1) * 2 + ne->board.state.t;
+
+    delete engine;
+    engine = ne;
+
+    return "OK";
 }
 
 void CLI::launch (void) {
@@ -427,7 +551,13 @@ void CLI::launch (void) {
         } else if (words[0] == "help") {
             std::cout << commandHelp() << std::endl;
         } else if (words[0] == "pos") {
-            std::cout << commandPos() << std::endl;
+            if (words.size() == 1) {
+                std::cout << commandPos() << std::endl;
+            } else if (words.size() == 7) {
+                std::cout << commandPos(words[1], words[2], words[3], words[4], words[5], words[6]) << std::endl;
+            } else {
+                std::cout << "BAD OPT" << std::endl;
+            }
         } else {
             std::cout << "BAD CMD" << std::endl;
         }
