@@ -806,11 +806,13 @@ bool Board::applyMove (Move &move) {
     history[history_n].state = state;
     history[history_n].move = move;
     history_n++;
+    bool inc_hmc = true;
 
     bool ep_set = false;
 
     if (move.piece == WP || move.piece == BP) {
         uint8_t np = move.promotion ? move.piece + move.promotion : move.piece;
+        inc_hmc = false;
         
         clrBit(pieces[move.piece], move.from);
         setBit(pieces[np], move.to);
@@ -869,6 +871,7 @@ bool Board::applyMove (Move &move) {
     if (getBit(occupied[AO], move.to)) {
         for (uint8_t i = WP + 6 * !state.t; i <= WK + 6 * !state.t; i++) {
             if (getBit(pieces[i], move.to)) {
+                inc_hmc = false;
                 clrBit(pieces[i], move.to);
                 break;
             }
@@ -891,6 +894,10 @@ bool Board::applyMove (Move &move) {
 
     if (!ep_set) {
         state.es = 0;
+    }
+
+    if (inc_hmc) {
+        state.hmc++;
     }
 
     return isPositionLegal();
@@ -1080,5 +1087,5 @@ uint8_t Board::getPieceAt (uint8_t square) {
         }
     }
 
-    return 255;   // Should never be reached
+    return 255;
 }
