@@ -46,6 +46,7 @@ class CLI {
         std::string commandList (void);
         std::string commandState (std::string v);
         std::string commandHelp (void);
+        std::string commandPos (void);
 
         void launch (void);
 };

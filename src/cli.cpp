@@ -217,6 +217,125 @@ std::string CLI::commandHelp (void) {
     return USAGE_STRING;
 }
 
+std::string CLI::commandPos (void) {
+    std::string output;
+    uint8_t n = 0;
+
+    for (uint8_t r = 7; r < 255; r--) {
+        for (uint8_t f = 0; f < 8; f++) {
+            uint8_t piece = engine.board.getPieceAt(r * 8 + f);
+
+            if (piece != 255 && n) {
+                output += std::to_string(n);
+                n = 0;
+            }
+
+            switch (piece) {
+                case WP:
+                    output += "P";
+                    break;
+
+                case WN:
+                    output += "N";
+                    break;
+
+                case WB:
+                    output += "B";
+                    break;
+
+                case WR:
+                    output += "R";
+                    break;
+
+                case WQ:
+                    output += "Q";
+                    break;
+
+                case WK:
+                    output += "K";
+                    break;
+
+                case BP:
+                    output += "p";
+                    break;
+
+                case BN:
+                    output += "n";
+                    break;
+
+                case BB:
+                    output += "b";
+                    break;
+
+                case BR:
+                    output += "r";
+                    break;
+
+                case BQ:
+                    output += "q";
+                    break;
+
+                case BK:
+                    output += "k";
+                    break;
+                
+                case 255:
+                    n++;
+                    break;
+            }
+        }
+
+        if (n) {
+            output += std::to_string(n);
+            n = 0;
+        }
+
+        if (r) {
+            output += "/";
+        }
+    }
+
+    output += std::string(" ") + (engine.board.state.t ? "b" : "w") + std::string(" ");
+    
+    bool wks = !engine.board.state.wc && !engine.board.state.wkm && !engine.board.state.wksrm;
+    bool wqs = !engine.board.state.wc && !engine.board.state.wkm && !engine.board.state.wqsrm;
+    bool bks = !engine.board.state.bc && !engine.board.state.bkm && !engine.board.state.bksrm;
+    bool bqs = !engine.board.state.bc && !engine.board.state.bkm && !engine.board.state.bqsrm;
+
+    if (wks) {
+        output += "K";
+    }
+
+    if (wqs) {
+        output += "Q";
+    }
+
+    if (bks) {
+        output += "k";
+    }
+
+    if (bqs) {
+        output += "q";
+    }
+
+    if (!wks && !wqs && !bks && !bqs) {
+        output += "-";
+    }
+
+    output += " ";
+
+    if (engine.board.state.es) {
+        output += 'a' + ((engine.board.state.es + (engine.board.state.t ? -8 : 8)) % 8);
+        output += '1' + ((engine.board.state.es + (engine.board.state.t ? -8 : 8)) / 8);
+    } else {
+        output += "-";
+    }
+
+    output += " " + std::to_string(engine.board.state.hmc) + " " + std::to_string(1 + engine.board.history_n / 2);
+
+    return output;
+}
+
 void CLI::launch (void) {
     std::cout << LICENSE_STRING << std::endl;
 
@@ -307,6 +426,8 @@ void CLI::launch (void) {
             std::cout << commandHash() << std::endl;
         } else if (words[0] == "help") {
             std::cout << commandHelp() << std::endl;
+        } else if (words[0] == "pos") {
+            std::cout << commandPos() << std::endl;
         } else {
             std::cout << "BAD CMD" << std::endl;
         }
