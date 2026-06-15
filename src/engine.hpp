@@ -67,7 +67,7 @@ class Engine {
         int evaluateBlackPosition (void);
         int evaluatePosition (void);
 
-        int scoreMove (Move &move, int ply);
+        int scoreMove (Move &move, int ply, uint8_t phase);
 
         int quiesce (int alpha, int beta, int ply);
         int determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply);
