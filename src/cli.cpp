@@ -483,6 +483,14 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
     return "OK";
 }
 
+std::string CLI::uciGo (std::string wtime, std::string btime, std::string winc, std::string binc) {
+    Move move;
+    int depth;
+    int score = engine->generateMove(std::stoi(wtime), std::stoi(btime), std::stoi(winc), std::stoi(binc), &move, &depth);
+
+    return "bestmove " + engine->board.moveToString(move);
+}
+
 void CLI::launch (void) {
     std::cout << LICENSE_STRING << std::endl;
 
@@ -504,93 +512,123 @@ void CLI::launch (void) {
             words.push_back(word);
         }
 
-        if (words[0] == "quit") {
-            commandQuit();
-        } else if (words[0] == "new") {
-            commandNew();
-            std::cout << "OK" << std::endl;
-        } else if (words[0] == "opt") {
-            if (words.size() > 2) {
-                std::cout << commandOpt(words[1], words[2]) << std::endl;
-            } else if (words.size() == 2) {
-                std::cout << commandOpt(words[1]) << std::endl;
-            } else {
-                std::cout << "BAD OPT" << std::endl;
-            }
-        } else if (words[0] == "move") {
-            if (words.size() == 1) {
-                std::cout << "BAD OPT" << std::endl;
-                continue;
-            }
+        if (uci) {
+            if (words[0] == "corax") {
+                uci = false;
+                std::cout << "OK" << std::endl;
+            } else if (words[0] == "isready") {
+                std::cout << "readyok" << std::endl;
+            } else if (words[0] == "position") {
+                if (words[1] == "startpos") {
+                    commandNew();
 
-            std::cout << commandMove(std::vector(words.begin() + 1, words.end())) << std::endl;
-        } else if (words[0] == "gen") {
-            if (words.size() == 2) {
-                std::cout << commandGen(words[1]) << std::endl;
-            } else {
-                std::cout << commandGen("") << std::endl;
-            }
-        } else if (words[0] == "sgen") {
-            if (words.size() == 2) {
-                std::cout << commandSGen(words[1]) << std::endl;
-            } else {
-                std::cout << commandSGen("") << std::endl;
-            }
-        } else if (words[0] == "agen") {
-            if (words.size() == 6) {
-                std::cout << commandAGen(words[1], words[2], words[3], words[4], words[5]) << std::endl;
-            } else if (words.size() == 5) {
-                std::cout << commandAGen("", words[1], words[2], words[3], words[4]) << std::endl;
-            } else {
-                std::cout << "BAD OPT" << std::endl;
-            }
-        } else if (words[0] == "perft") {
-            if (words.size() == 1) {
-                std::cout << "BAD OPT" << std::endl;
-                continue;
-            }
+                    if (words[2] == "moves") {
+                        std::cout << commandMove(std::vector(words.begin() + 3, words.end())) << std::endl;
+                    }
+                } else if (words[1] == "fen") {
+                    commandPos(words[2], words[3], words[4], words[5], words[6], words[7]);
 
-            std::cout << commandPerft(words[1]) << std::endl;
-        } else if (words[0] == "eval") {
-            std::cout << commandEvaluate() << std::endl;
-        } else if (words[0] == "back") {
-            if (words.size() == 2) {
-                std::cout << commandBack(words[1]) << std::endl;
-            } else {
-                std::cout << commandBack("1") << std::endl;
-            }
-        } else if (words[0] == "piece") {
-            if (words.size() == 1) {
-                std::cout << "BAD OPT" << std::endl;
-                continue;
-            }
-
-            std::cout << commandPiece(words[1]) << std::endl;
-        } else if (words[0] == "plist") {
-            std::cout << commandPList() << std::endl;
-        } else if (words[0] == "list") {
-            std::cout << commandList() << std::endl;
-        } else if (words[0] == "state") {
-            if (words.size() == 1) {
-                std::cout << "BAD OPT" << std::endl;
-                continue;
-            }
-
-            std::cout << commandState(words[1]) << std::endl;
-        } else if (words[0] == "hash") {
-            std::cout << commandHash() << std::endl;
-        } else if (words[0] == "help") {
-            std::cout << commandHelp() << std::endl;
-        } else if (words[0] == "pos") {
-            if (words.size() == 1) {
-                std::cout << commandPos() << std::endl;
-            } else if (words.size() == 7) {
-                std::cout << commandPos(words[1], words[2], words[3], words[4], words[5], words[6]) << std::endl;
-            } else {
-                std::cout << "BAD OPT" << std::endl;
+                    if (words[8] == "moves") {
+                        std::cout << commandMove(std::vector(words.begin() + 9, words.end())) << std::endl;
+                    }
+                }
+            } else if (words[0] == "go") {
+                std::cout << uciGo(words[2], words[4], words[6], words[8]) << std::endl;
+            } else if (words[0] == "quit") {
+                commandQuit();
             }
         } else {
-            std::cout << "BAD CMD" << std::endl;
+            if (words[0] == "quit") {
+                commandQuit();
+            } else if (words[0] == "new") {
+                commandNew();
+                std::cout << "OK" << std::endl;
+            } else if (words[0] == "opt") {
+                if (words.size() > 2) {
+                    std::cout << commandOpt(words[1], words[2]) << std::endl;
+                } else if (words.size() == 2) {
+                    std::cout << commandOpt(words[1]) << std::endl;
+                } else {
+                    std::cout << "BAD OPT" << std::endl;
+                }
+            } else if (words[0] == "move") {
+                if (words.size() == 1) {
+                    std::cout << "BAD OPT" << std::endl;
+                    continue;
+                }
+
+                std::cout << commandMove(std::vector(words.begin() + 1, words.end())) << std::endl;
+            } else if (words[0] == "gen") {
+                if (words.size() == 2) {
+                    std::cout << commandGen(words[1]) << std::endl;
+                } else {
+                    std::cout << commandGen("") << std::endl;
+                }
+            } else if (words[0] == "sgen") {
+                if (words.size() == 2) {
+                    std::cout << commandSGen(words[1]) << std::endl;
+                } else {
+                    std::cout << commandSGen("") << std::endl;
+                }
+            } else if (words[0] == "agen") {
+                if (words.size() == 6) {
+                    std::cout << commandAGen(words[1], words[2], words[3], words[4], words[5]) << std::endl;
+                } else if (words.size() == 5) {
+                    std::cout << commandAGen("", words[1], words[2], words[3], words[4]) << std::endl;
+                } else {
+                    std::cout << "BAD OPT" << std::endl;
+                }
+            } else if (words[0] == "perft") {
+                if (words.size() == 1) {
+                    std::cout << "BAD OPT" << std::endl;
+                    continue;
+                }
+
+                std::cout << commandPerft(words[1]) << std::endl;
+            } else if (words[0] == "eval") {
+                std::cout << commandEvaluate() << std::endl;
+            } else if (words[0] == "back") {
+                if (words.size() == 2) {
+                    std::cout << commandBack(words[1]) << std::endl;
+                } else {
+                    std::cout << commandBack("1") << std::endl;
+                }
+            } else if (words[0] == "piece") {
+                if (words.size() == 1) {
+                    std::cout << "BAD OPT" << std::endl;
+                    continue;
+                }
+
+                std::cout << commandPiece(words[1]) << std::endl;
+            } else if (words[0] == "plist") {
+                std::cout << commandPList() << std::endl;
+            } else if (words[0] == "list") {
+                std::cout << commandList() << std::endl;
+            } else if (words[0] == "state") {
+                if (words.size() == 1) {
+                    std::cout << "BAD OPT" << std::endl;
+                    continue;
+                }
+
+                std::cout << commandState(words[1]) << std::endl;
+            } else if (words[0] == "hash") {
+                std::cout << commandHash() << std::endl;
+            } else if (words[0] == "help") {
+                std::cout << commandHelp() << std::endl;
+            } else if (words[0] == "pos") {
+                if (words.size() == 1) {
+                    std::cout << commandPos() << std::endl;
+                } else if (words.size() == 7) {
+                    std::cout << commandPos(words[1], words[2], words[3], words[4], words[5], words[6]) << std::endl;
+                } else {
+                    std::cout << "BAD OPT" << std::endl;
+                }
+            } else if (words[0] == "uci") {
+                uci = true;
+                std::cout << "id name Iskelt Corax\nid author Iskander Edward Boutel\nuciok" << std::endl;
+            } else {
+                std::cout << "BAD CMD" << std::endl;
+            }
         }
     }
 }

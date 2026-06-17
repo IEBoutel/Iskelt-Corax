@@ -30,6 +30,7 @@ class CLI {
         uint8_t min_depth = 5;
         uint8_t max_depth = 255;
         uint64_t tt = 22;
+        bool uci = false;
 
         CLI (void);
 
@@ -52,6 +53,8 @@ class CLI {
         std::string commandHelp (void);
         std::string commandPos (void);
         std::string commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves);
+
+        std::string uciGo (std::string wtime, std::string btime, std::string winc, std::string binc);
 
         void launch (void);
 };
