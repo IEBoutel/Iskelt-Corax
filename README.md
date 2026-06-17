@@ -17,7 +17,7 @@ The following benchmarks are for the latest version and were calculated on an AM
 
 | Metric | Value |
 | ------ | ----- |
-| Perft(7) | 2m27s |
+| Perft(7) | 2m23s |
 | Move search depth in 1s (excl. quiesence) | 8 plies |
 | Move search depth in 5s (excl. quiesence) | 10 plies |
 
