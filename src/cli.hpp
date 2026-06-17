@@ -40,6 +40,7 @@ class CLI {
         std::string commandBack (std::string n);
         std::string commandGen (std::string apply);
         std::string commandSGen (std::string apply);
+        std::string commandAGen (std::string apply, std::string wtime, std::string btime, std::string winc, std::string binc);
         std::string commandPerft (std::string d);
         std::string commandEvaluate (void);
         std::string commandPiece (std::string piece);

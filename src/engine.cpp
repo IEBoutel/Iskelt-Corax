@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "engine.hpp"
 #include <cstring>
 #include <chrono>
+#include <cmath>
 
 int PS[5] = {100, 290, 310, 500, 900};   // Material scores
 int PW[4] = {1, 1, 2, 4};                // Piece phase weights
@@ -739,6 +740,15 @@ int Engine::scoreMove (Move &move, int ply, uint8_t phase) {
     }
 
     return score;
+}
+
+int Engine::generateMove (int wtime, int btime, int winc, int binc, Move *move, int *depth) {
+    int timeleft = board.state.t ? btime : wtime;
+    int increment = board.state.t ? binc : winc;
+    int movetime = timeleft / 60 + increment;
+    uint8_t min_depth = 5 + std::log(((double) movetime) / 1000) / std::log(5);
+
+    return generateMove(movetime, min_depth, 255, move, depth);
 }
 
 Engine::Engine (void) {

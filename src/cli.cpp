@@ -94,6 +94,18 @@ std::string CLI::commandSGen (std::string apply) {
     return engine->board.moveToString(move);
 }
 
+std::string CLI::commandAGen (std::string apply, std::string wtime, std::string btime, std::string winc, std::string binc) {
+    Move move;
+    int depth;
+    int score = engine->generateMove(std::stoi(wtime), std::stoi(btime), std::stoi(winc), std::stoi(binc), &move, &depth);
+
+    if (apply == "apply") {
+        engine->board.applyMove(move);
+    }
+
+    return std::string("Move: ") + engine->board.moveToString(move) + ", Score: " + std::to_string(score) + ", Final Depth: " + std::to_string(depth) + ", Leaves: " + std::to_string(engine->n);
+}
+
 std::string CLI::commandBack (std::string n) {
     for (int i = 0; i < std::stoi(n); i++) {
         if (!engine->board.history_n) {
@@ -512,6 +524,14 @@ void CLI::launch (void) {
                 std::cout << commandSGen(words[1]) << std::endl;
             } else {
                 std::cout << commandSGen("") << std::endl;
+            }
+        } else if (words[0] == "agen") {
+            if (words.size() == 6) {
+                std::cout << commandAGen(words[1], words[2], words[3], words[4], words[5]) << std::endl;
+            } else if (words.size() == 5) {
+                std::cout << commandAGen("", words[1], words[2], words[3], words[4]) << std::endl;
+            } else {
+                std::cout << "BAD OPT" << std::endl;
             }
         } else if (words[0] == "perft") {
             if (words.size() == 1) {

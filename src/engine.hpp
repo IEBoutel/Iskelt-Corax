@@ -72,6 +72,7 @@ class Engine {
         int quiesce (int alpha, int beta, int ply);
         int determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply);
         int generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *move, int *depth);
+        int generateMove (int wtime, int btime, int winc, int binc, Move *move, int *depth);
 };
 
 #endif
