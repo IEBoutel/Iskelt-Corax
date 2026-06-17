@@ -1,12 +1,13 @@
 # Documentation
 
-## CLI Documentation
+## Corax CLI Documentation
 
 | Command | Description |
 | - | - |
+| `uci` | Switch to [UCI](#uci-cli-documentation) |
 | `quit` | Exit the CLI |
 | `new` | Reset the engine |
-| `opt <option> [value]` | Set or retrieve an option. See [CLI Options](#cli-options) |
+| `opt <option> [value]` | Set or retrieve an option. See [CLI Options](#corax-cli-options) |
 | `move <move>...` | Apply UCI-format moves |
 | `back [number]` | Undo a specified number of moves. Defaults to 1 |
 | `gen [apply]` | Determine the optimal move in the current position. The "apply" parameter automatically applies the generated move if present |
@@ -22,13 +23,24 @@
 | `pos [FEN]` | Set the current position if FEN is provided, otherwise retrieve the current position in FEN |
 | `help` | Returns the command list |
 
-## CLI Options
+## Corax CLI Options
 
 | Option | Description |
 | - | - |
-| time | Move generation time limit in milliseconds |
-| min_depth | Minimum search depth (plies) in move generation. Overrides the time limit |
-| max_depth | Maximum search depth (plies) in move generation |
+| `time` | Move generation time limit in milliseconds |
+| `min_depth` | Minimum search depth (plies) in move generation. Overrides the time limit |
+| `max_depth` | Maximum search depth (plies) in move generation |
+| `tt` | Transposition table size (exponent of two) |
+
+## UCI CLI Documentation
+
+| Command | Description |
+|-|-|
+| `corax` | Switch to Corax CLI |
+| `quit` | Exit the CLI |
+| `isready` | Await ready state |
+| `position <fen [FEN] \| startpos> [moves <move>...]` | Set position |
+| `go wtime <wtime> btime <btime> winc <winc> binc <binc>` | Generate a move |
 
 ## Board State
 
