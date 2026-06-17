@@ -365,9 +365,8 @@ std::string CLI::commandPos (void) {
 }
 
 std::string CLI::commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves) {
-    auto ne = new Engine;
-    memset(ne->board.pieces, 0, sizeof(ne->board.pieces));
-
+    memset(engine->board.pieces, 0, sizeof(engine->board.pieces));
+    
     uint8_t r = 7;
     uint8_t f = 0;
 
@@ -379,51 +378,51 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
 
         switch (c) {
             case 'P':
-                setBit(ne->board.pieces[WP], r * 8 + f);
+                setBit(engine->board.pieces[WP], r * 8 + f);
                 break;
             
             case 'N':
-                setBit(ne->board.pieces[WN], r * 8 + f);
+                setBit(engine->board.pieces[WN], r * 8 + f);
                 break;
 
             case 'B':
-                setBit(ne->board.pieces[WB], r * 8 + f);
+                setBit(engine->board.pieces[WB], r * 8 + f);
                 break;
 
             case 'R':
-                setBit(ne->board.pieces[WR], r * 8 + f);
+                setBit(engine->board.pieces[WR], r * 8 + f);
                 break;
 
             case 'Q':
-                setBit(ne->board.pieces[WQ], r * 8 + f);
+                setBit(engine->board.pieces[WQ], r * 8 + f);
                 break;
 
             case 'K':
-                setBit(ne->board.pieces[WK], r * 8 + f);
+                setBit(engine->board.pieces[WK], r * 8 + f);
                 break;
             
             case 'p':
-                setBit(ne->board.pieces[BP], r * 8 + f);
+                setBit(engine->board.pieces[BP], r * 8 + f);
                 break;
             
             case 'n':
-                setBit(ne->board.pieces[BN], r * 8 + f);
+                setBit(engine->board.pieces[BN], r * 8 + f);
                 break;
 
             case 'b':
-                setBit(ne->board.pieces[BB], r * 8 + f);
+                setBit(engine->board.pieces[BB], r * 8 + f);
                 break;
 
             case 'r':
-                setBit(ne->board.pieces[BR], r * 8 + f);
+                setBit(engine->board.pieces[BR], r * 8 + f);
                 break;
 
             case 'q':
-                setBit(ne->board.pieces[BQ], r * 8 + f);
+                setBit(engine->board.pieces[BQ], r * 8 + f);
                 break;
 
             case 'k':
-                setBit(ne->board.pieces[BK], r * 8 + f);
+                setBit(engine->board.pieces[BK], r * 8 + f);
                 break;
             
             case '/':
@@ -435,50 +434,51 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
         f++;
     }
 
-    ne->board.occupied[WO] = ne->board.pieces[WP] | ne->board.pieces[WN] | ne->board.pieces[WB] | ne->board.pieces[WR] | ne->board.pieces[WQ] | ne->board.pieces[WK];
-    ne->board.occupied[BO] = ne->board.pieces[BP] | ne->board.pieces[BN] | ne->board.pieces[BB] | ne->board.pieces[BR] | ne->board.pieces[BQ] | ne->board.pieces[BK];
-    ne->board.occupied[AO] = ne->board.occupied[WO] | ne->board.occupied[BO];
-    ne->board.state.t = turn == "b";
+    engine->board.occupied[WO] = engine->board.pieces[WP] | engine->board.pieces[WN] | engine->board.pieces[WB] | engine->board.pieces[WR] | engine->board.pieces[WQ] | engine->board.pieces[WK];
+    engine->board.occupied[BO] = engine->board.pieces[BP] | engine->board.pieces[BN] | engine->board.pieces[BB] | engine->board.pieces[BR] | engine->board.pieces[BQ] | engine->board.pieces[BK];
+    engine->board.occupied[AO] = engine->board.occupied[WO] | engine->board.occupied[BO];
+    engine->board.state.t = turn == "b";
 
     if (castling != "-") {
         for (char &c : castling) {
             switch (c) {
                 case 'K':
-                    ne->board.state.wc = 0;
-                    ne->board.state.wkm = 0;
-                    ne->board.state.wksrm = 0;
+                    engine->board.state.wc = 0;
+                    engine->board.state.wkm = 0;
+                    engine->board.state.wksrm = 0;
                     break;
                 
                 case 'Q':
-                    ne->board.state.wc = 0;
-                    ne->board.state.wkm = 0;
-                    ne->board.state.wqsrm = 0;
+                    engine->board.state.wc = 0;
+                    engine->board.state.wkm = 0;
+                    engine->board.state.wqsrm = 0;
                     break;
 
                 case 'k':
-                    ne->board.state.bc = 0;
-                    ne->board.state.bkm = 0;
-                    ne->board.state.bksrm = 0;
+                    engine->board.state.bc = 0;
+                    engine->board.state.bkm = 0;
+                    engine->board.state.bksrm = 0;
                     break;
 
                 case 'q':
-                    ne->board.state.bc = 0;
-                    ne->board.state.bkm = 0;
-                    ne->board.state.bqsrm = 0;
+                    engine->board.state.bc = 0;
+                    engine->board.state.bkm = 0;
+                    engine->board.state.bqsrm = 0;
                     break;
             }
         }
     }
 
     if (enpassant != "-") {
-        ne->board.state.es = ((enpassant[1] - '1') * 8) + (enpassant[0] - 'a') + (ne->board.state.t ? 8 : -8);
+        engine->board.state.es = ((enpassant[1] - '1') * 8) + (enpassant[0] - 'a') + (engine->board.state.t ? 8 : -8);
+    } else {
+        engine->board.state.es = 0;
     }
 
-    ne->board.state.hmc = std::stoi(half_moves);
-    ne->board.bmc = (std::stoi(full_moves) - 1) * 2 + ne->board.state.t;
-
-    delete engine;
-    engine = ne;
+    engine->board.state.hmc = std::stoi(half_moves);
+    engine->board.bmc = (std::stoi(full_moves) - 1) * 2 + engine->board.state.t;
+    engine->board.history_n = 0;
+    engine->board.state.hash = engine->board.getHash();
 
     return "OK";
 }
@@ -520,7 +520,7 @@ void CLI::launch (void) {
                 std::cout << "readyok" << std::endl;
             } else if (words[0] == "position") {
                 if (words[1] == "startpos") {
-                    commandNew();
+                    commandPos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "w", "KQkq", "-", "0", "1");
 
                     if (words[2] == "moves") {
                         std::cout << commandMove(std::vector(words.begin() + 3, words.end())) << std::endl;
@@ -536,6 +536,8 @@ void CLI::launch (void) {
                 std::cout << uciGo(words[2], words[4], words[6], words[8]) << std::endl;
             } else if (words[0] == "quit") {
                 commandQuit();
+            } else {
+                std::cout << "BAD CMD" << std::endl;
             }
         } else {
             if (words[0] == "quit") {
