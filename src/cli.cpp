@@ -115,7 +115,7 @@ std::string CLI::commandEvaluate (void) {
 }
 
 std::string CLI::commandHash (void) {
-    return std::to_string(engine->board.getHash());
+    return std::to_string(engine->board.state.hash);
 }
 
 std::string CLI::commandPiece (std::string piece) {

@@ -79,6 +79,8 @@ Board::Board (void) {
     for (uint64_t i = 0; i < 781; i++) {
         zobrist[i] = random64();
     }
+
+    state.hash = getHash();
 }
 
 uint64_t Board::random64 (void) {
@@ -891,6 +893,7 @@ bool Board::applyMove (Move &move) {
     state.bqsrm = state.bqsrm ? 1 : !(pieces[BR] & (1ull << 56));
 
     state.t = !state.t;
+    state.hash = getHash();
 
     if (!ep_set) {
         state.es = 0;

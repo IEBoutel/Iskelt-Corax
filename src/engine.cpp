@@ -311,13 +311,25 @@ int Engine::evaluatePosition (void) {
     return board.state.t == WHITE ? evaluateWhitePosition() - evaluateBlackPosition() : evaluateBlackPosition() - evaluateWhitePosition();
 }
 
+bool Engine::isRepetition (void) {
+    if (board.history_n < 8) {
+        return false;
+    }
+
+    return board.state.hash == board.history[board.history_n - 2].state.hash && board.state.hash == board.history[board.history_n - 4].state.hash && board.state.hash == board.history[board.history_n - 6].state.hash;
+}
+
 int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply) {
     if (md && std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() - ts > tl) {
         return TIME_BREAK;
     }
 
+    if (isRepetition()) {
+        return -STALEMATE;
+    }
+
+    uint64_t hash = board.state.hash;
     int oalpha = alpha;
-    uint64_t hash = board.getHash();
     TTEntry entry = tt[hash & TT_MAX];
     bool match = entry.hash == hash;
 
@@ -490,6 +502,10 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 }
 
 int Engine::quiesce (int alpha, int beta, int ply) {
+    if (isRepetition()) {
+        return -STALEMATE;
+    }
+
     bool check = board.isInCheck();
     uint8_t phase = (PW[0] * __builtin_popcountll(board.pieces[WN] | board.pieces[BN])) + (PW[1] * __builtin_popcountll(board.pieces[WB] | board.pieces[BB])) + (PW[2] * __builtin_popcountll(board.pieces[WR] | board.pieces[BR])) + (PW[3] * __builtin_popcountll(board.pieces[WQ] | board.pieces[BQ]));
     int cs = evaluatePosition();
