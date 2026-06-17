@@ -11,6 +11,7 @@
 | `back [number]` | Undo a specified number of moves. Defaults to 1 |
 | `gen [apply]` | Determine the optimal move in the current position. The "apply" parameter automatically applies the generated move if present |
 | `sgen [apply]` | Equivalent to `gen` but only outputs the determined move |
+| `agen [apply] <wtime> <btime> <winc> <binc>` | Time control adapting move generation. Overrides other move generation limits |
 | `perft <depth>` | Determine `perft(depth)` from the current position |
 | `eval` | Returns a static evaluation of the current position from the perspective of the side to move |
 | `piece <piece>` | Retrieve a piece bitboard. Piece codes take the form `WP`, `BN`, etc. |
