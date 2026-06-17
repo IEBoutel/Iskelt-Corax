@@ -134,7 +134,7 @@ std::string CLI::commandEvaluate (void) {
 }
 
 std::string CLI::commandHash (void) {
-    return std::to_string(engine->board.state.hash);
+    return std::to_string(engine->board.getHash());
 }
 
 std::string CLI::commandPiece (std::string piece) {
@@ -478,7 +478,6 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
     engine->board.state.hmc = std::stoi(half_moves);
     engine->board.bmc = (std::stoi(full_moves) - 1) * 2 + engine->board.state.t;
     engine->board.history_n = 0;
-    engine->board.state.hash = engine->board.getHash();
 
     return "OK";
 }

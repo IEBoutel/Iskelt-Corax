@@ -313,11 +313,7 @@ int Engine::evaluatePosition (void) {
 }
 
 bool Engine::isRepetition (void) {
-    if (board.history_n < 8) {
-        return false;
-    }
-
-    return board.state.hash == board.history[board.history_n - 2].state.hash && board.state.hash == board.history[board.history_n - 4].state.hash && board.state.hash == board.history[board.history_n - 6].state.hash;
+    return false;
 }
 
 int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply) {
@@ -329,7 +325,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
         return -STALEMATE;
     }
 
-    uint64_t hash = board.state.hash;
+    uint64_t hash = board.getHash();
     int oalpha = alpha;
     TTEntry entry = tt[hash & tt_max];
     bool match = entry.hash == hash;

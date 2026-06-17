@@ -74,7 +74,6 @@ typedef struct {
     uint8_t t : 1;     // Turn
     uint8_t es : 6;    // En passant square
     uint8_t hmc : 6;   // Half-move clock
-    uint64_t hash;
 } State;
 
 typedef struct {
