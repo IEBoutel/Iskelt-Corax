@@ -331,7 +331,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 
     uint64_t hash = board.state.hash;
     int oalpha = alpha;
-    TTEntry entry = tt[hash & TT_MAX];
+    TTEntry entry = tt[hash & tt_max];
     bool match = entry.hash == hash;
 
     if (match && entry.depth >= d) {
@@ -492,7 +492,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
             entry.type = EXACT;
         }
 
-        tt[hash & TT_MAX] = entry;
+        tt[hash & tt_max] = entry;
     }
 
     if (move) {
@@ -751,6 +751,13 @@ int Engine::generateMove (int wtime, int btime, int winc, int binc, Move *move, 
     return generateMove(movetime, min_depth, 255, move, depth);
 }
 
+void Engine::setTTSize (int e) {
+    tt_max = (1 << e) - 1;
+
+    delete tt;
+    tt = new TTEntry[tt_max + 1]();
+}
+
 Engine::Engine (void) {
     for (uint8_t i = 0; i < 64; i++) {
         pp_mask[WHITE][i] = getFileMask(i % 8) & (UINT64_MAX << i);
@@ -773,5 +780,10 @@ Engine::Engine (void) {
         }
     }
 
-    tt = new TTEntry[TT_MAX + 1]();
+    tt_max = 4194303;
+    tt = new TTEntry[tt_max + 1]();
+}
+
+Engine::~Engine (void) {
+    delete tt;
 }

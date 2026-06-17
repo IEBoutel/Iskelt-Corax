@@ -55,6 +55,13 @@ std::string CLI::commandOpt (std::string option, std::string value) {
         return "OK";
     }
 
+    if (option == "tt") {
+        tt = std::stoi(value);
+        engine->setTTSize(tt);
+
+        return "OK";
+    }
+
     return "BAD OPT";
 }
 
@@ -225,6 +232,10 @@ std::string CLI::commandOpt (std::string option) {
     
     if (option == "max_depth") {
         return std::to_string(max_depth);
+    }
+
+    if (option == "tt") {
+        return std::to_string(tt);
     }
 
     return "BAD OPT";

@@ -83,6 +83,11 @@ Board::Board (void) {
     state.hash = getHash();
 }
 
+Board::~Board (void) {
+    delete[] diagonal_magic_attacks;
+    delete[] straight_magic_attacks;
+}
+
 uint64_t Board::random64 (void) {
     return rng();
 }

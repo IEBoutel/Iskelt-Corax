@@ -118,6 +118,7 @@ class Board {
         uint64_t zobrist[781];
 
         Board (void);
+        ~Board (void);
 
         uint64_t random64 (void);
         uint64_t sparseRandom64 (void);

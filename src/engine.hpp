@@ -32,8 +32,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define EXACT 1
 #define UPPER 2
 
-#define TT_MAX 4194303
-
 typedef struct {
     uint64_t hash;
     Move move;
@@ -54,6 +52,7 @@ class Engine {
         Move killers[256][2] = {0};
         int history[2][64][64] = {0};   // (turn, to, from)
         TTEntry *tt;
+        int tt_max;
 
         uint64_t pp_mask[2][64] = {0};
         uint64_t ip_mask[64] = {0};
@@ -61,18 +60,22 @@ class Engine {
         uint64_t kp_mask[64] = {0};
 
         Engine (void);
+        ~Engine (void);
 
         int evaluateWhitePosition (void);
         int evaluateBlackPosition (void);
         int evaluatePosition (void);
-        bool isRepetition (void);
 
+
+        bool isRepetition (void);
         int scoreMove (Move &move, int ply, uint8_t phase);
 
         int quiesce (int alpha, int beta, int ply);
         int determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply);
         int generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *move, int *depth);
         int generateMove (int wtime, int btime, int winc, int binc, Move *move, int *depth);
+
+        void setTTSize (int e);
 };
 
 #endif
