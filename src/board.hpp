@@ -120,6 +120,8 @@ class Board {
         Board (void);
         ~Board (void);
 
+        void resetPosition (void);
+
         uint64_t random64 (void);
         uint64_t sparseRandom64 (void);
 

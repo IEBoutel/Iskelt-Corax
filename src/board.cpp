@@ -21,34 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <random>
 
 Board::Board (void) {
-    pieces[WP] = 0b1111111100000000;
-    pieces[WN] = 0b01000010;
-    pieces[WB] = 0b00100100;
-    pieces[WR] = 0b10000001;
-    pieces[WQ] = 0b00001000;
-    pieces[WK] = 0b00010000;
-
-    pieces[BP] = 0b11111111ull << 48;
-    pieces[BN] = 0b01000010ull << 56;
-    pieces[BB] = 0b00100100ull << 56;
-    pieces[BR] = 0b10000001ull << 56;
-    pieces[BQ] = 0b00001000ull << 56;
-    pieces[BK] = 0b00010000ull << 56;
-
-    occupied[WO] = 0xFFFF;
-    occupied[BO] = 0xFFFFull << 48;
-    occupied[AO] = 0xFFFF | (0xFFFFull << 48);
-
-    state.wkm = 0;
-    state.wksrm = 0;
-    state.wqsrm = 0;
-
-    state.bkm = 0;
-    state.bksrm = 0;
-    state.bqsrm = 0;
-
-    state.t = WHITE;
-    state.es = 0;
+    resetPosition();
 
     fillPawnAttacks();
     fillKnightAttacks();
@@ -86,6 +59,37 @@ Board::Board (void) {
 Board::~Board (void) {
     delete[] diagonal_magic_attacks;
     delete[] straight_magic_attacks;
+}
+
+void Board::resetPosition (void) {
+    pieces[WP] = 0b1111111100000000;
+    pieces[WN] = 0b01000010;
+    pieces[WB] = 0b00100100;
+    pieces[WR] = 0b10000001;
+    pieces[WQ] = 0b00001000;
+    pieces[WK] = 0b00010000;
+
+    pieces[BP] = 0b11111111ull << 48;
+    pieces[BN] = 0b01000010ull << 56;
+    pieces[BB] = 0b00100100ull << 56;
+    pieces[BR] = 0b10000001ull << 56;
+    pieces[BQ] = 0b00001000ull << 56;
+    pieces[BK] = 0b00010000ull << 56;
+
+    occupied[WO] = 0xFFFF;
+    occupied[BO] = 0xFFFFull << 48;
+    occupied[AO] = 0xFFFF | (0xFFFFull << 48);
+
+    state.wkm = 0;
+    state.wksrm = 0;
+    state.wqsrm = 0;
+
+    state.bkm = 0;
+    state.bksrm = 0;
+    state.bqsrm = 0;
+
+    state.t = WHITE;
+    state.es = 0;
 }
 
 uint64_t Board::random64 (void) {
