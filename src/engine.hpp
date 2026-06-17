@@ -52,7 +52,7 @@ class Engine {
         Move killers[256][2] = {0};
         int history[2][64][64] = {0};   // (turn, to, from)
         TTEntry *tt;
-        int tt_max;
+        uint64_t tt_max;
 
         uint64_t pp_mask[2][64] = {0};
         uint64_t ip_mask[64] = {0};

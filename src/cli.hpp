@@ -29,7 +29,7 @@ class CLI {
         int time = 5000;
         uint8_t min_depth = 5;
         uint8_t max_depth = 255;
-        int tt;
+        uint64_t tt = 4194303;
 
         CLI (void);
 
