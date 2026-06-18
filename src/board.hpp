@@ -21,7 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 #include <string>
-#include <random>
+
+#include "util.hpp"
 
 #define WP 0
 #define WN 1
@@ -53,12 +54,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define NC 0
 #define KSC 1
 #define QSC 2
-
-#define setBit(v, i) ((v) |= 1ull << (i))
-#define getBit(v, i) ((v >> (i)) & 1ull)
-#define clrBit(v, i) ((v) &= ~(1ull << (i)))
-
-#define getFileMask(f) (0x101010101010101ull << (f))
 
 typedef struct {
     uint8_t wkm : 1;     // King moved
@@ -113,16 +108,12 @@ class Board {
         uint64_t straight_magics[64] = {0};
         uint64_t (*straight_magic_attacks)[4096];
 
-        std::mt19937_64 rng;
         uint64_t zobrist[781];
 
         Board (void);
         ~Board (void);
 
         void resetPosition (void);
-
-        uint64_t random64 (void);
-        uint64_t sparseRandom64 (void);
 
         uint64_t getHash (void);
 

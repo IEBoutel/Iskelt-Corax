@@ -19,8 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __CLI_HPP__
 #define __CLI_HPP__
 
-#include "engine.hpp"
 #include <vector>
+
+#include "engine.hpp"
 
 class CLI {
     public:

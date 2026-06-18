@@ -16,10 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "engine.hpp"
 #include <cstring>
-#include <chrono>
 #include <cmath>
+
+#include "engine.hpp"
 
 int PS[5] = {100, 290, 310, 500, 900};   // Material scores
 int PW[4] = {1, 1, 2, 4};                // Piece phase weights
@@ -317,7 +317,7 @@ bool Engine::isRepetition (void) {
 }
 
 int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply) {
-    if (md && std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() - ts > tl) {
+    if (md && getTime() - ts > tl) {
         return TIME_BREAK;
     }
 
@@ -578,7 +578,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
 }
 
 int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *move, int *depth) {
-    ts = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    ts = getTime();
     tl = time;
     md = false;
     n = 0;
@@ -587,7 +587,7 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
     Move best_move;
 
     for (int d = min_depth; d <= max_depth; d++) {
-        uint64_t cts = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        uint64_t cts = getTime();
         int output = determineBestMove(d, &m, -1000000, 1000000, 0);
 
         if (output == -CHECKMATE || output == CHECKMATE || output == STALEMATE || output == -STALEMATE) {
@@ -605,7 +605,7 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
             best_move = m;
         }
 
-        if (d == max_depth || (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() - cts) > (time / 2)) {
+        if (d == max_depth || (getTime() - cts) > (time / 2)) {
             memcpy(move, &best_move, sizeof(Move));
             memcpy(depth, &d, sizeof(int));
 

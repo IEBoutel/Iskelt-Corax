@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "board.hpp"
 #include <cstring>
 #include <random>
+
+#include "board.hpp"
 
 Board::Board (void) {
     resetPosition();
@@ -46,8 +47,6 @@ Board::Board (void) {
     delete[] diagonal_attacks;
     delete[] straight_occupancies;
     delete[] straight_attacks;
-
-    rng = std::mt19937_64(std::random_device{}());
 
     for (uint64_t i = 0; i < 781; i++) {
         zobrist[i] = random64();
@@ -88,14 +87,6 @@ void Board::resetPosition (void) {
 
     state.t = WHITE;
     state.es = 0;
-}
-
-uint64_t Board::random64 (void) {
-    return rng();
-}
-
-uint64_t Board::sparseRandom64 (void) {
-    return random64() & random64() & random64();
 }
 
 void Board::fillPawnAttacks (void) {

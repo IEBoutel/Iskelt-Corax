@@ -16,9 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "cli.hpp"
 #include <iostream>
 #include <sstream>
+
+#include "cli.hpp"
 
 std::string LICENSE_STRING = "Iskelt Corax  Copyright (C) 2026  Iskander Edward Boutel\n";
 std::string USAGE_STRING = "\nCommands:\n  quit\n  new\n  opt <option> [value]\n  move <move>...\n  back [number]\n  gen [apply]\n  sgen [apply]\n  perft <depth>\n  eval\n  piece <piece>\n  hash\n  plist\n  list\n  state\n  pos [FEN]\n  help\n";
