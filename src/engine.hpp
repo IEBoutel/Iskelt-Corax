@@ -66,7 +66,6 @@ class Engine {
         int evaluateBlackPosition (void);
         int evaluatePosition (void);
 
-
         bool isRepetition (void);
         int scoreMove (Move &move, int ply, uint8_t phase);
 
