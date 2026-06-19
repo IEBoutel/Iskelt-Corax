@@ -135,6 +135,12 @@ class Board {
         bool isBlackSquareAttacked (uint8_t square);
         bool isPositionLegal (void);
 
+        uint64_t generatePawnMoves (uint8_t i, uint8_t colour);
+        inline uint64_t generateKnightMoves (uint8_t i, uint8_t colour) {return knight_attacks[i] & ~occupied[colour];}
+        inline uint64_t generateDiagonalMoves (uint8_t i, uint8_t colour) {return (~occupied[colour]) & diagonal_magic_attacks[i][((occupied[AO] & diagonal_masks[i]) * diagonal_magics[i]) >> (64 - __builtin_popcountll(diagonal_masks[i]))];}
+        inline uint64_t generateStraightMoves (uint8_t i, uint8_t colour) {return (~occupied[colour]) & straight_magic_attacks[i][((occupied[AO] & straight_masks[i]) * straight_magics[i]) >> (64 - __builtin_popcountll(straight_masks[i]))];}
+        inline uint64_t generateKingMoves (uint8_t i, uint8_t colour) {return (king_attacks[i] & ~occupied[colour]);}
+
         uint8_t generateWhitePawnMoves (Move *moves);
         uint8_t generateWhiteKnightMoves (Move *moves);
         uint8_t generateWhiteBishopMoves (Move *moves);

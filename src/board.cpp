@@ -408,6 +408,26 @@ void Board::findStraightMagics (uint64_t occupancies[64][4096], uint64_t attacks
     }
 }
 
+uint64_t Board::generatePawnMoves (uint8_t i, uint8_t colour) {
+    int8_t p, pp, lim;
+
+    if (colour) {
+        p = -8;
+        pp = -16;
+        lim = i > 47;
+    } else {
+        p = 8;
+        pp = 16;
+        lim = i < 16;
+    }
+
+    uint64_t pc = (~occupied[AO] & (1ull << (i + p)));
+
+    return (pawn_attacks[colour][i] & occupied[!colour])                // Standard attacks
+            | pc                                                        // Standard push
+            | (lim && pc ? (~occupied[AO] & (1ull << (i + pp))) : 0);   // Double Push
+}
+
 uint8_t Board::generateWhitePawnMoves (Move *moves) {
     uint8_t n = 0;
     uint64_t pawns = pieces[WP];
@@ -418,11 +438,7 @@ uint8_t Board::generateWhitePawnMoves (Move *moves) {
     while (pawns) {
         i = __builtin_ctzll(pawns);
         clrBit(pawns, i);
-        uint64_t pc = (~occupied[AO] & (1ull << (i + 8)));
-
-        m = (pawn_attacks[WHITE][i] & occupied[BO])                        // Standard attacks
-            | pc                                                           // Standard push
-            | (i < 16 && pc ? (~occupied[AO] & (1ull << (i + 16))) : 0);   // Double push
+        m = generatePawnMoves(i, WHITE);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -471,11 +487,7 @@ uint8_t Board::generateBlackPawnMoves (Move *moves) {
     while (pawns) {
         i = __builtin_ctzll(pawns);
         clrBit(pawns, i);
-        uint64_t pc = (~occupied[AO] & (1ull << (i - 8)));
-
-        m = (pawn_attacks[BLACK][i] & occupied[WO])                        // Standard attacks
-            | pc                                                           // Standard push
-            | (i > 47 && pc ? (~occupied[AO] & (1ull << (i - 16))) : 0);   // Double push
+        m = generatePawnMoves(i, BLACK);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -525,7 +537,7 @@ uint8_t Board::generateWhiteKnightMoves (Move *moves) {
         i = __builtin_ctzll(knights);
         clrBit(knights, i);
 
-        m = (knight_attacks[i] & ~occupied[WO]);
+        m = generateKnightMoves(i, WHITE);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -552,7 +564,7 @@ uint8_t Board::generateBlackKnightMoves (Move *moves) {
         i = __builtin_ctzll(knights);
         clrBit(knights, i);
 
-        m = (knight_attacks[i] & ~occupied[BO]);
+        m = generateKnightMoves(i, BLACK);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -578,8 +590,7 @@ uint8_t Board::diagonalSlider (Move *moves, uint8_t piece, uint8_t turn) {
         i = __builtin_ctzll(p);
         clrBit(p, i);
 
-        uint64_t mask = diagonal_masks[i];
-        uint64_t m = (~occupied[turn]) & diagonal_magic_attacks[i][((occupied[AO] & mask) * diagonal_magics[i]) >> (64 - __builtin_popcountll(mask))];
+        uint64_t m = generateDiagonalMoves(i, turn);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -605,8 +616,7 @@ uint8_t Board::straightSlider (Move *moves, uint8_t piece, uint8_t turn) {
         i = __builtin_ctzll(p);
         clrBit(p, i);
 
-        uint64_t mask = straight_masks[i];
-        uint64_t m = (~occupied[turn]) & straight_magic_attacks[i][((occupied[AO] & mask) * straight_magics[i]) >> (64 - __builtin_popcountll(mask))];
+        uint64_t m = generateStraightMoves(i, turn);
 
         while (m) {
             j = __builtin_ctzll(m);
@@ -658,7 +668,7 @@ uint8_t Board::generateWhiteKingMoves (Move *moves) {
     uint64_t m;
 
     i = __builtin_ctzll(king);
-    m = (king_attacks[i] & ~occupied[WO]);
+    m = generateKingMoves(i, WHITE);
 
     while (m) {
         j = __builtin_ctzll(m);
@@ -700,7 +710,7 @@ uint8_t Board::generateBlackKingMoves (Move *moves) {
     uint64_t m;
 
     i = __builtin_ctzll(king);
-    m = (king_attacks[i] & ~occupied[BO]);
+    m = generateKingMoves(i, BLACK);
 
     while (m) {
         j = __builtin_ctzll(m);
