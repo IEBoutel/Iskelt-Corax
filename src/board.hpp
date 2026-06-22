@@ -179,11 +179,11 @@ inline bool Board::isInCheck (void) {
     return state.t ? isBlackSquareAttacked(__builtin_ctzll(pieces[BK])) : isWhiteSquareAttacked(__builtin_ctzll(pieces[WK]));
 }
 
-inline bool simpleMovesEq (Move m1, Move m2) {
+inline bool Board::simpleMovesEq (Move m1, Move m2) {
     return m1.to == m2.to && m1.from == m2.from;
 }
 
-inline bool fullMovesEq (Move m1, Move m2) {
+inline bool Board::fullMovesEq (Move m1, Move m2) {
     return m1.to == m2.to
             && m1.from == m2.from
             && m1.piece == m2.piece
