@@ -158,7 +158,7 @@ class Board {
         uint8_t generatePseudoLegalMoves (Move *moves);
 
         bool applyMove (Move &move);             // Returns false if illegal
-        bool applyMove (std::string &move);      // UCI
+        uint8_t applyMove (std::string &move);   // UCI (returns 0 if legal, 1 if illegal in second stage, 2 if illegal in first stage)
         void undoMove (void);
         std::string moveToString (Move &move);   // UCI
 
@@ -167,6 +167,7 @@ class Board {
         inline bool isCapture (Move m) {return getBit(occupied[AO], m.to) || m.ep;}
         inline bool isInCheck (void) {return state.t ? isBlackSquareAttacked(__builtin_ctzll(pieces[BK])) : isWhiteSquareAttacked(__builtin_ctzll(pieces[WK]));}
         inline bool simpleMovesEq (Move m1, Move m2) {return m1.to == m2.to && m1.from == m2.from;}
+        inline bool fullMovesEq (Move m1, Move m2) {return m1.to == m2.to && m1.from == m2.from && m1.piece == m2.piece && ((m1.piece == WP || m1.piece == BP) ? (m1.promotion == m2.promotion && m1.ep == m2.ep) : true) && ((m1.piece == WK || m1.piece == BK) ? (m1.castle == m2.castle) : true);}
         uint8_t getPieceAt (uint8_t square);
 };
 

@@ -949,9 +949,9 @@ uint64_t Board::perft(uint8_t n) {
     return n2;
 }
 
-bool Board::applyMove (std::string &move) {
+uint8_t Board::applyMove (std::string &move) {
     if (move.length() < 4) {
-        return false;
+        return 2;
     }
 
     Move m;
@@ -979,7 +979,7 @@ bool Board::applyMove (std::string &move) {
                 break;
             
             default:
-                return false;
+                return 2;
         }
     } else {
         m.promotion = NP;
@@ -998,13 +998,13 @@ bool Board::applyMove (std::string &move) {
     if (m.piece == WK) {
         if (m.to - m.from == 2) {
             if (state.wkm || state.wksrm) {
-                return false;
+                return 2;
             }
 
             m.castle = KSC;
         } else if (m.from - m.to == 2) {
             if (state.wkm || state.wqsrm) {
-                return false;
+                return 2;
             }
 
             m.castle = QSC;
@@ -1014,20 +1014,29 @@ bool Board::applyMove (std::string &move) {
     if (m.piece == BK) {
         if (m.to - m.from == 2) {
             if (state.bkm || state.bksrm) {
-                return false;
+                return 2;
             }
 
             m.castle = KSC;
         } else if (m.from - m.to == 2) {
             if (state.bkm || state.bqsrm) {
-                return false;
+                return 2;
             }
 
             m.castle = QSC;
         }
     }
 
-    return applyMove(m);
+    Move moves[256];
+    uint8_t n = generatePseudoLegalMoves(moves);
+
+    for (uint8_t i = 0; i < n; i++) {
+        if (fullMovesEq(moves[i], m)) {
+            return !applyMove(m);
+        }
+    }
+
+    return 2;
 }
 
 std::string Board::moveToString (Move &move) {

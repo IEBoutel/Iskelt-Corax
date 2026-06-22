@@ -68,8 +68,12 @@ std::string CLI::commandOpt (std::string option, std::string value) {
 
 std::string CLI::commandMove (std::vector<std::string> moves) {
     for (auto &move : moves) {
-        if (!engine->board.applyMove(move)) {
-            engine->board.undoMove();
+        uint8_t result = engine->board.applyMove(move);
+
+        if (result) {
+            if (result == 1) {
+                engine->board.undoMove();
+            }
 
             return std::string("BAD MOVE: ") + move;
         }
