@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #define TIME_BREAK -INT32_MAX
 
 #define CHECKMATE 100000
-#define STALEMATE 50000
+#define STALEMATE 0
 
 #define MAX_PHASE 24
 

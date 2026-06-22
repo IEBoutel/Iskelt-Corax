@@ -419,10 +419,6 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
                 score = -determineBestMove(d - 1, NULL, -beta, -alpha, ply + 1);
             }
 
-            if (score == STALEMATE) {
-                score = -STALEMATE;
-            }
-
             if (score == -TIME_BREAK) {
                 board.undoMove();
 
