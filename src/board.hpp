@@ -164,11 +164,31 @@ class Board {
 
         uint64_t perft (uint8_t n);
 
-        inline bool isCapture (Move m) {return getBit(occupied[AO], m.to) || m.ep;}
-        inline bool isInCheck (void) {return state.t ? isBlackSquareAttacked(__builtin_ctzll(pieces[BK])) : isWhiteSquareAttacked(__builtin_ctzll(pieces[WK]));}
-        inline bool simpleMovesEq (Move m1, Move m2) {return m1.to == m2.to && m1.from == m2.from;}
-        inline bool fullMovesEq (Move m1, Move m2) {return m1.to == m2.to && m1.from == m2.from && m1.piece == m2.piece && ((m1.piece == WP || m1.piece == BP) ? (m1.promotion == m2.promotion && m1.ep == m2.ep) : true) && ((m1.piece == WK || m1.piece == BK) ? (m1.castle == m2.castle) : true);}
+        inline bool isCapture (Move m);
+        inline bool isInCheck (void);
+        inline bool simpleMovesEq (Move m1, Move m2);
+        inline bool fullMovesEq (Move m1, Move m2);
         uint8_t getPieceAt (uint8_t square);
 };
+
+inline bool Board::isCapture (Move m) {
+    return getBit(occupied[AO], m.to) || m.ep;
+}
+
+inline bool Board::isInCheck (void) {
+    return state.t ? isBlackSquareAttacked(__builtin_ctzll(pieces[BK])) : isWhiteSquareAttacked(__builtin_ctzll(pieces[WK]));
+}
+
+inline bool simpleMovesEq (Move m1, Move m2) {
+    return m1.to == m2.to && m1.from == m2.from;
+}
+
+inline bool fullMovesEq (Move m1, Move m2) {
+    return m1.to == m2.to
+            && m1.from == m2.from
+            && m1.piece == m2.piece
+            && ((m1.piece == WP || m1.piece == BP) ? (m1.promotion == m2.promotion && m1.ep == m2.ep) : true)
+            && ((m1.piece == WK || m1.piece == BK) ? (m1.castle == m2.castle) : true);
+}
 
 #endif
