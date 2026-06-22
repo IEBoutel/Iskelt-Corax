@@ -536,6 +536,15 @@ void CLI::launch (void) {
                 std::cout << uciGo(words[2], words[4], words[6], words[8]) << std::endl;
             } else if (words[0] == "quit") {
                 commandQuit();
+            } else if (words[0] == "ucinewgame") {
+                commandNew();
+            } else if (words[0] == "setoption") {
+                if (words.size() != 5) {
+                    std::cout << "BAD OPT" << std::endl;
+                    continue;
+                }
+
+                commandOpt(words[2], words[4]);
             } else {
                 std::cout << "BAD CMD" << std::endl;
             }
