@@ -6,17 +6,16 @@ CXXFLAGS = ["-std=c++20", "-O3", "-march=native", "-mtune=native"]
 LDFLAGS = []
 CXX = "clang++"
 LD = "clang++"
-TARGET = "../iskelt-corax-v0.4.0.exe"
+TARGET = "../iskelt-corax-v0.4.0"
 
 class CompileError (Exception):
 	pass
 
 def determinePlatform ():
 	if os.name == "nt":
+		TARGET += ".exe"
 		CXXFLAGS.append("--target=x86_64-pc-windows-msvc")
 		LDFLAGS.append("--target=x86_64-pc-windows-msvc")
-	else:
-		raise CompileError("Unsupported platform")
 
 def compileSources (sources: list[str]):
 	for i in range(len(SOURCES)):

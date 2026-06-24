@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #include "cli.hpp"
 
@@ -400,7 +401,7 @@ std::string CLI::commandPos (void) {
 }
 
 std::string CLI::commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves) {
-    memset(engine->board.pieces, 0, sizeof(engine->board.pieces));
+    std::memset(engine->board.pieces, 0, sizeof(engine->board.pieces));
     
     uint8_t r = 7;
     uint8_t f = 0;
