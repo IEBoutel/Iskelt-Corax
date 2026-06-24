@@ -83,9 +83,19 @@ std::string CLI::commandMove (std::vector<std::string> moves) {
 }
 
 std::string CLI::commandGen (std::string apply) {
-    Move move;
+    Move move = {0};
     int depth;
     int score = engine->generateMove(time, min_depth, max_depth, &move, &depth);
+
+    if (move.to == move.from) {
+        if (!score) {
+            return "Stalemate";
+        }
+
+        if (score == -CHECKMATE) {
+            return std::string("Checkmate: ") + (engine->board.state.t ? "white win" : "black win");
+        }
+    }
 
     if (apply == "apply") {
         engine->board.applyMove(move);
@@ -95,10 +105,20 @@ std::string CLI::commandGen (std::string apply) {
 }
 
 std::string CLI::commandSGen (std::string apply) {
-    Move move;
+    Move move = {0};
     int depth;
     int score = engine->generateMove(time, min_depth, max_depth, &move, &depth);
 
+    if (move.to == move.from) {
+        if (!score) {
+            return "Stalemate";
+        }
+
+        if (score == -CHECKMATE) {
+            return std::string("Checkmate: ") + (engine->board.state.t ? "white win" : "black win");
+        }
+    }
+    
     if (apply == "apply") {
         engine->board.applyMove(move);
     }
@@ -107,10 +127,20 @@ std::string CLI::commandSGen (std::string apply) {
 }
 
 std::string CLI::commandAGen (std::string apply, std::string wtime, std::string btime, std::string winc, std::string binc) {
-    Move move;
+    Move move = {0};
     int depth;
     int score = engine->generateMove(std::stoi(wtime), std::stoi(btime), std::stoi(winc), std::stoi(binc), &move, &depth);
 
+    if (move.to == move.from) {
+        if (!score) {
+            return "Stalemate";
+        }
+
+        if (score == -CHECKMATE) {
+            return std::string("Checkmate: ") + (engine->board.state.t ? "white win" : "black win");
+        }
+    }
+    
     if (apply == "apply") {
         engine->board.applyMove(move);
     }
@@ -443,6 +473,14 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
     engine->board.occupied[BO] = engine->board.pieces[BP] | engine->board.pieces[BN] | engine->board.pieces[BB] | engine->board.pieces[BR] | engine->board.pieces[BQ] | engine->board.pieces[BK];
     engine->board.occupied[AO] = engine->board.occupied[WO] | engine->board.occupied[BO];
     engine->board.state.t = turn == "b";
+    engine->board.state.wc = 1;
+    engine->board.state.wkm = 1;
+    engine->board.state.wksrm = 1;
+    engine->board.state.wqsrm = 1;
+    engine->board.state.bc = 1;
+    engine->board.state.bkm = 1;
+    engine->board.state.bksrm = 1;
+    engine->board.state.bqsrm = 1;
 
     if (castling != "-") {
         for (char &c : castling) {
@@ -488,9 +526,13 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
 }
 
 std::string CLI::uciGo (std::string wtime, std::string btime, std::string winc, std::string binc) {
-    Move move;
+    Move move = {0};
     int depth;
     int score = engine->generateMove(std::stoi(wtime), std::stoi(btime), std::stoi(winc), std::stoi(binc), &move, &depth);
+
+    if (move.to == move.from) {
+        return "bestmove (none)";
+    }
 
     return "bestmove " + engine->board.moveToString(move);
 }
