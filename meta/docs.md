@@ -22,6 +22,7 @@
 | `state` | Retrieve a board state value. See [Board State](#board-state) |
 | `pos [FEN]` | Set the current position if FEN is provided, otherwise retrieve the current position in FEN |
 | `help` | Returns the command list |
+| `time <command>` | Time a command |
 
 ## Corax CLI Options
 
@@ -40,7 +41,8 @@
 | `quit` | Exit the CLI |
 | `isready` | Await ready state |
 | `position <fen [FEN] \| startpos> [moves <move>...]` | Set position |
-| `go wtime <wtime> btime <btime> winc <winc> binc <binc>` | Generate a move |
+| `go [wtime <wtime>] [btime <btime>] [winc <winc>] [binc <binc>] [depth <depth>] [movetime <movetime>] [perft <depth>]` | Generate a move |
+| `time <command>` | Time a command |
 
 ## Board State
 
