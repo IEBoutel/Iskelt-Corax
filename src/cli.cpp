@@ -593,6 +593,15 @@ void CLI::launch (void) {
             words.push_back(word);
         }
 
+        bool time = false;
+        uint64_t start;
+
+        if (words[0] == "time") {
+            time = true;
+            words = std::vector(words.begin() + 1, words.end());
+            start = getTime();
+        }
+
         if (uci) {
             if (words[0] == "corax") {
                 uci = false;
@@ -721,6 +730,10 @@ void CLI::launch (void) {
             } else {
                 std::cout << "BAD CMD" << std::endl;
             }
+        }
+
+        if (time) {
+            std::cout << "Time: " << getTime() - start << "ms" << std::endl;
         }
     }
 }
