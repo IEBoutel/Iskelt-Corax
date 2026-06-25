@@ -526,10 +526,44 @@ std::string CLI::commandPos (std::string layout, std::string turn, std::string c
     return "OK";
 }
 
-std::string CLI::uciGo (std::string wtime, std::string btime, std::string winc, std::string binc) {
+std::string CLI::uciGo (std::vector<std::string> args) {
+    if (args.size() % 2) {
+        return "BAD OPT: Missing parameter specification";
+    }
+
+    GenLimits limits;
+
+    for (int i = 0; i < args.size(); i += 2) {
+        if (args[i] == "wtime") {
+            limits.wtime = std::stoi(args[i + 1]);
+        } else if (args[i] == "btime") {
+            limits.btime = std::stoi(args[i + 1]);
+        } else if (args[i] == "winc") {
+            limits.winc = std::stoi(args[i + 1]);
+        } else if (args[i] == "binc") {
+            limits.binc = std::stoi(args[i + 1]);
+        } else if (args[i] == "depth") {
+            limits.depth = std::stoi(args[i + 1]);
+        } else if (args[i] == "movetime") {
+            limits.movetime = std::stoi(args[i + 1]);
+        } else if (args[i] == "perft") {
+            limits.perft = std::stoi(args[i + 1]);
+        } else {
+            return std::string("BAD OPT: ") + args[i];
+        }
+    }
+
+    if (!(limits.depth != -1 || limits.movetime != -1 || limits.perft != -1) && !(limits.wtime != -1 && limits.btime != -1 && limits.winc != -1 && limits.binc != -1)) {
+        return "BAD OPT: Insufficient parameters";
+    }
+
     Move move = {0};
     int depth;
-    int score = engine->generateMove(std::stoi(wtime), std::stoi(btime), std::stoi(winc), std::stoi(binc), &move, &depth);
+    int score = engine->generateMove(limits, &move, &depth);
+
+    if (limits.perft != -1) {
+        return "Nodes searched: " + std::to_string(score);
+    }
 
     if (move.to == move.from) {
         return "bestmove (none)";
@@ -580,7 +614,7 @@ void CLI::launch (void) {
                     }
                 }
             } else if (words[0] == "go") {
-                std::cout << uciGo(words[2], words[4], words[6], words[8]) << std::endl;
+                std::cout << uciGo(std::vector(words.begin() + 1, words.end())) << std::endl;
             } else if (words[0] == "quit") {
                 commandQuit();
             } else if (words[0] == "ucinewgame") {

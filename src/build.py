@@ -2,7 +2,7 @@ import os, sys, logging
 
 SOURCES = ["board.cpp", "engine.cpp", "cli.cpp", "util.cpp", "main.cpp"]
 OBJECTS = [source.replace("cpp", "o") for source in SOURCES]
-CXXFLAGS = ["-std=c++20", "-O3", "-march=native", "-mtune=native"]
+CXXFLAGS = ["-std=c++20", "-O3", "-march=native", "-mtune=native", "-Wno-non-c-typedef-for-linkage"]
 LDFLAGS = []
 CXX = "clang++"
 LD = "clang++"

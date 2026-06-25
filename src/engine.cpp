@@ -743,6 +743,26 @@ int Engine::generateMove (int wtime, int btime, int winc, int binc, Move *move, 
     return generateMove(movetime, min_depth, 255, move, depth);
 }
 
+int Engine::generateMove (GenLimits limits, Move *move, int *depth) {
+    if (limits.perft != -1) {
+        return board.perft(limits.perft);
+    }
+
+    if (limits.depth != -1 && limits.movetime != -1) {
+        return generateMove(limits.movetime, 0, limits.depth, move, depth);
+    }
+
+    if (limits.depth != -1) {
+        return generateMove(INT32_MAX, 0, limits.depth, move, depth);
+    }
+
+    if (limits.movetime != -1) {
+        return generateMove(limits.movetime, 0, 255, move, depth);
+    }
+
+    return generateMove(limits.wtime, limits.btime, limits.winc, limits.binc, move, depth);
+}
+
 void Engine::setTTSize (int e) {
     tt_max = (1 << e) - 1;
 

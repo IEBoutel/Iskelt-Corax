@@ -55,7 +55,7 @@ class CLI {
         std::string commandPos (void);
         std::string commandPos (std::string layout, std::string turn, std::string castling, std::string enpassant, std::string half_moves, std::string full_moves);
 
-        std::string uciGo (std::string wtime, std::string btime, std::string winc, std::string binc);
+        std::string uciGo (std::vector<std::string> args);
 
         void launch (void);
 };

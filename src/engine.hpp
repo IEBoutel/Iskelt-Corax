@@ -40,6 +40,16 @@ typedef struct {
     uint8_t type;
 } TTEntry;
 
+typedef struct {
+    int wtime = -1;
+    int btime = -1;
+    int winc = -1;
+    int binc = -1;
+    int depth = -1;
+    int movetime = -1;
+    int perft = -1;
+} GenLimits;
+
 class Engine {
     public:
         Board board;
@@ -73,6 +83,7 @@ class Engine {
         int determineBestMove (uint8_t d, Move *move, int alpha, int beta, int ply);
         int generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *move, int *depth);
         int generateMove (int wtime, int btime, int winc, int binc, Move *move, int *depth);
+        int generateMove (GenLimits limits, Move *move, int *depth);
 
         void setTTSize (int e);
 };
