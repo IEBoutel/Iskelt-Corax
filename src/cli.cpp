@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <format>
 
 #include "cli.hpp"
 
@@ -572,6 +573,75 @@ std::string CLI::uciGo (std::vector<std::string> args) {
     return "bestmove " + engine->board.moveToString(move);
 }
 
+std::string CLI::commandDisp (void) {
+    std::string board;
+    
+    for (uint8_t r = 7; r < 255; r--) {
+        board += "\n  +---+---+---+---+---+---+---+---+\n" + std::to_string(r) + " | ";
+
+        for (uint8_t f = 0; f < 8; f++) {
+            uint8_t piece = engine->board.getPieceAt(r * 8 + f);
+
+            switch (piece) {
+                case WP:
+                    board += "P";
+                    break;
+                
+                case WN:
+                    board += "N";
+                    break;
+                
+                case WB:
+                    board += "B";
+                    break;
+                
+                case WR:
+                    board += "R";
+                    break;
+                
+                case WQ:
+                    board += "Q";
+                    break;
+                
+                case WK:
+                    board += "K";
+                    break;
+                
+                case BP:
+                    board += "p";
+                    break;
+                
+                case BN:
+                    board += "n";
+                    break;
+                
+                case BB:
+                    board += "b";
+                    break;
+                
+                case BR:
+                    board += "r";
+                    break;
+                
+                case BQ:
+                    board += "q";
+                    break;
+                
+                case BK:
+                    board += "k";
+                    break;
+                
+                default:
+                    board += " ";
+            }
+
+            board += " | ";
+        }
+    }
+
+    return board + "\n  +---+---+---+---+---+---+---+---+\n    a   b   c   d   e   f   g   h\n\nFEN: " + commandPos() + "\nHash: " + std::format("{:X}", engine->board.getHash());
+}
+
 void CLI::launch (void) {
     std::cout << LICENSE_STRING << std::endl;
 
@@ -727,6 +797,8 @@ void CLI::launch (void) {
             } else if (words[0] == "uci") {
                 uci = true;
                 std::cout << "id name Iskelt Corax\nid author Iskander Edward Boutel\nuciok" << std::endl;
+            } else if (words[0] == "disp") {
+                std::cout << commandDisp() << std::endl;
             } else {
                 std::cout << "BAD CMD" << std::endl;
             }

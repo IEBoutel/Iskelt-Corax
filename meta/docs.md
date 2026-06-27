@@ -23,6 +23,7 @@
 | `pos [FEN]` | Set the current position if FEN is provided, otherwise retrieve the current position in FEN |
 | `help` | Returns the command list |
 | `time <command>` | Time a command |
+| `disp` | Display board |
 
 ## Corax CLI Options
 
@@ -32,17 +33,6 @@
 | `min_depth` | Minimum search depth (plies) in move generation. Overrides the time limit |
 | `max_depth` | Maximum search depth (plies) in move generation |
 | `tt` | Transposition table size (exponent of two) |
-
-## UCI CLI Documentation
-
-| Command | Description |
-|-|-|
-| `corax` | Switch to Corax CLI |
-| `quit` | Exit the CLI |
-| `isready` | Await ready state |
-| `position <fen [FEN] \| startpos> [moves <move>...]` | Set position |
-| `go [wtime <wtime>] [btime <btime>] [winc <winc>] [binc <binc>] [depth <depth>] [movetime <movetime>] [perft <depth>]` | Generate a move |
-| `time <command>` | Time a command |
 
 ## Board State
 
@@ -54,3 +44,15 @@
 | `(w\|b)c` | (white\|black) castle state. 0 for no castle, 1 for king-side castle, and 2 for queen-side castle |
 | `t` | Player to move. 0 for white and 1 for black |
 | `es` | Square of pawn that can be taken via en-passant. 0 if en-passant is unavailable |
+
+## UCI CLI Documentation
+
+| Command | Description |
+|-|-|
+| `corax` | Switch to Corax CLI |
+| `quit` | Exit the CLI |
+| `isready` | Await ready state |
+| `position <fen [FEN] \| startpos> [moves <move>...]` | Set position |
+| `go [wtime <wtime>] [btime <btime>] [winc <winc>] [binc <binc>] [depth <depth>] [movetime <movetime>] [perft <depth>]` | Generate a move |
+| `time <command>` | Time a command |
+| `disp` | Display board |
