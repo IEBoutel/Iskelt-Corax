@@ -11,16 +11,6 @@ Iskelt Corax is currently in an early stage of development and likely still cont
 
 Documentation can be found [here](meta/docs.md).
 
-## Benchmarks
-
-The following benchmarks are for the latest version and were calculated on an AMD Ryzen 9950HX platform in the starting position. Benchmarks are kept for each version [here](meta/benchmark_history.md).
-
-| Metric | Value |
-| ------ | ----- |
-| Perft(7) | 2m23s |
-| Move search depth in 1s (excl. quiesence) | 8 plies |
-| Move search depth in 5s (excl. quiesence) | 10 plies |
-
 ## Versions
 
 The latest version is v0.2.0
