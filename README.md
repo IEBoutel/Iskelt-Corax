@@ -13,7 +13,7 @@ Documentation can be found [here](meta/docs.md).
 
 ## Versions
 
-The latest version is v0.2.0
+The latest version is v0.4.0
 
 Versions of Iskelt Corax take the form "v{major}.{minor}.{micro}". The major version increments on significant changes. The minor version increments upon the addition of feautures. The micro version increments upon bug fixes and other such changes that do not affect the intended behaviour.
 
