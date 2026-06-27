@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "cli.hpp"
 
 std::string LICENSE_STRING = "Iskelt Corax  Copyright (C) 2026  Iskander Edward Boutel\n";
-std::string USAGE_STRING = "\nCorax:\n  uci\n  quit\n  new\n  opt <option> [value]\n  move <move>...\n  back [number]\n  gen [apply]\n  sgen [apply]\n  agen [apply] <wtime> <btime> <winc> <binc>\n  perft <depth>\n  eval\n  piece <piece>\n  hash\n  plist\n  list\n  state\n  pos [FEN]\n  help\n\nUCI:\n  corax\n  quit\n  isready\n  position <fen [FEN] | startpos> [moves <move>...]\n  go wtime <wtime> btime <btime> winc <winc> binc <binc>\n";
+std::string USAGE_STRING = "\nCorax:\n  uci\n  quit\n  new\n  opt <option> [value]\n  move <move>...\n  back [number]\n  gen [apply]\n  sgen [apply]\n  agen [apply] <wtime> <btime> <winc> <binc>\n  perft <depth>\n  eval\n  piece <piece>\n  hash\n  plist\n  list\n  state\n  pos [FEN]\n  help\n  time <command>\n  disp\n\nUCI:\n  corax\n  quit\n  isready\n  position <fen [FEN] | startpos> [moves <move>...]\n  go wtime <wtime> btime <btime> winc <winc> binc <binc>\n  time <command>\n  disp\n";
 
 CLI::CLI (void) {
     engine = new Engine;
