@@ -13,6 +13,8 @@ class CompileError (Exception):
 
 def determinePlatform ():
 	if os.name == "nt":
+		global TARGET
+
 		TARGET += ".exe"
 		CXXFLAGS.append("--target=x86_64-pc-windows-msvc")
 		LDFLAGS.append("--target=x86_64-pc-windows-msvc")
