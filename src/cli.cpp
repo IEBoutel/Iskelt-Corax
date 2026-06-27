@@ -705,6 +705,8 @@ void CLI::launch (void) {
                 }
 
                 commandOpt(words[2], words[4]);
+            } else if (words[0] == "disp") {
+                std::cout << commandDisp() << std::endl;
             } else {
                 std::cout << "BAD CMD" << std::endl;
             }
