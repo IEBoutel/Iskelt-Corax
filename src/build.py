@@ -6,7 +6,7 @@ CXXFLAGS = ["-std=c++20", "-O3", "-march=native", "-mtune=native", "-Wno-non-c-t
 LDFLAGS = []
 CXX = "clang++"
 LD = "clang++"
-TARGET = "../iskelt-corax-v0.4.0"
+TARGET = "../iskelt-corax-v0.4.1"
 
 class CompileError (Exception):
 	pass
