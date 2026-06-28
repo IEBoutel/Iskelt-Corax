@@ -648,7 +648,6 @@ void CLI::launch (void) {
     std::string cmd;
 
     while (1) {
-        std::cout << "> ";
         std::getline(std::cin, cmd);
 
         if (cmd.empty()) {
@@ -683,13 +682,21 @@ void CLI::launch (void) {
                     commandPos("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", "w", "KQkq", "-", "0", "1");
 
                     if (words[2] == "moves") {
-                        std::cout << commandMove(std::vector(words.begin() + 3, words.end())) << std::endl;
+                        auto out = commandMove(std::vector(words.begin() + 3, words.end()));
+
+                        if (out != "OK") {
+                            std::cout << out << std::endl;
+                        }
                     }
                 } else if (words[1] == "fen") {
                     commandPos(words[2], words[3], words[4], words[5], words[6], words[7]);
 
                     if (words[8] == "moves") {
-                        std::cout << commandMove(std::vector(words.begin() + 9, words.end())) << std::endl;
+                        auto out = commandMove(std::vector(words.begin() + 9, words.end()));
+
+                        if (out != "OK") {
+                            std::cout << out << std::endl;
+                        }
                     }
                 }
             } else if (words[0] == "go") {
