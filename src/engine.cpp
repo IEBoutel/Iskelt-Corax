@@ -322,7 +322,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     }
 
     if (isRepetition()) {
-        return -STALEMATE;
+        return STALEMATE;
     }
 
     uint64_t hash = board.getHash();
@@ -457,18 +457,10 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     }
 
     if (!legal) {
-        if (board.state.t == WHITE) {
-            if (board.isWhiteSquareAttacked(__builtin_ctzll(board.pieces[WK]))) {
-                max = -CHECKMATE + ply;
-            } else {
-                max = -STALEMATE;
-            }
+        if (board.isInCheck()) {
+            max = -CHECKMATE + ply;
         } else {
-            if (board.isBlackSquareAttacked(__builtin_ctzll(board.pieces[BK]))) {
-                max = -CHECKMATE + ply;
-            } else {
-                max = -STALEMATE;
-            }
+            max = STALEMATE;
         }
     } else if (d >= entry.depth || !entry.hash) {
         entry.hash = hash;
@@ -496,7 +488,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 
 int Engine::quiesce (int alpha, int beta, int ply) {
     if (isRepetition()) {
-        return -STALEMATE;
+        return STALEMATE;
     }
 
     bool check = board.isInCheck();
@@ -566,7 +558,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
         if (check) {
             return -CHECKMATE + ply;
         } else {
-            return -STALEMATE;
+            return STALEMATE;
         }
     }
 
@@ -585,10 +577,6 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
     for (int d = min_depth; d <= max_depth; d++) {
         uint64_t cts = getTime();
         int output = determineBestMove(d, &m, -1000000, 1000000, 0);
-
-        if (output == -CHECKMATE || output == CHECKMATE || output == STALEMATE || output == -STALEMATE) {
-            return output;
-        }
 
         if (output == TIME_BREAK) {
             d--;
