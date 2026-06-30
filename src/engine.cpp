@@ -499,7 +499,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
         if (cs >= beta) {
             n++;
 
-            return beta;
+            return cs;
         }
     }
 
@@ -542,7 +542,7 @@ int Engine::quiesce (int alpha, int beta, int ply) {
                 if (score >= beta) {
                     board.undoMove();
 
-                    return beta;
+                    return score;
                 }
 
                 if (score > alpha) {
