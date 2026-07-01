@@ -949,82 +949,74 @@ uint64_t Board::perft(uint8_t n) {
     return n2;
 }
 
-uint8_t Board::applyMove (std::string &move) {
+int Board::stringToMove (std::string &move, Move *m) {
     if (move.length() < 4) {
         return 2;
     }
 
-    Move m;
-
-    m.from = (move[0] - 'a') + ((move[1] - '1') * 8);
-    m.to = (move[2] - 'a') + ((move[3] - '1') * 8);
-    m.piece = getPieceAt(m.from);
+    m->from = (move[0] - 'a') + ((move[1] - '1') * 8);
+    m->to = (move[2] - 'a') + ((move[3] - '1') * 8);
+    m->piece = getPieceAt(m->from);
 
     if (move.length() == 5) {
         switch (move[4]) {
             case 'n':
-                m.promotion = PN;
+                m->promotion = PN;
                 break;
 
             case 'b':
-                m.promotion = PB;
+                m->promotion = PB;
                 break;
 
             case 'r':
-                m.promotion = PR;
+                m->promotion = PR;
                 break;
 
             case 'q':
-                m.promotion = PQ;
+                m->promotion = PQ;
                 break;
             
             default:
                 return 2;
         }
     } else {
-        m.promotion = NP;
+        m->promotion = NP;
     }
 
-    if (m.piece == WP) {
-        if ((m.from - state.es == 1 || state.es - m.from == 1) && m.to - state.es == 8) {
-            m.ep = 1;
+    if (m->piece == WP) {
+        if ((m->from - state.es == 1 || state.es - m->from == 1) && m->to - state.es == 8) {
+            m->ep = 1;
         }
-    } else if (m.piece == BP) {
-        if ((m.from - state.es == 1 || state.es - m.from == 1) && state.es - m.to == 8) {
-            m.ep = 1;
-        }
-    }
-
-    if (m.piece == WK) {
-        if (m.to - m.from == 2) {
-            if (state.wkm || state.wksrm) {
-                return 2;
-            }
-
-            m.castle = KSC;
-        } else if (m.from - m.to == 2) {
-            if (state.wkm || state.wqsrm) {
-                return 2;
-            }
-
-            m.castle = QSC;
+    } else if (m->piece == BP) {
+        if ((m->from - state.es == 1 || state.es - m->from == 1) && state.es - m->to == 8) {
+            m->ep = 1;
         }
     }
 
-    if (m.piece == BK) {
-        if (m.to - m.from == 2) {
-            if (state.bkm || state.bksrm) {
-                return 2;
-            }
-
-            m.castle = KSC;
-        } else if (m.from - m.to == 2) {
-            if (state.bkm || state.bqsrm) {
-                return 2;
-            }
-
-            m.castle = QSC;
+    if (m->piece == WK) {
+        if (m->to - m->from == 2) {
+            m->castle = KSC;
+        } else if (m->from - m->to == 2) {
+            m->castle = QSC;
         }
+    }
+
+    if (m->piece == BK) {
+        if (m->to - m->from == 2) {
+            m->castle = KSC;
+        } else if (m->from - m->to == 2) {
+            m->castle = QSC;
+        }
+    }
+
+    return 0;
+}
+
+uint8_t Board::applyMove (std::string &move) {
+    Move m;
+
+    if (stringToMove(move, &m)) {
+        return 2;
     }
 
     Move moves[256];

@@ -330,7 +330,7 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
     TTEntry entry = tt[hash & tt_max];
     bool match = entry.hash == hash;
 
-    if (match && entry.depth >= d) {
+    if (match && entry.depth >= d && ply) {
         switch (entry.type) {
             case LOWER:
                 alpha = std::max(alpha, entry.score);
@@ -378,7 +378,18 @@ int Engine::determineBestMove (uint8_t d, Move *move, int alpha, int beta, int p
 
     int max = -1000000;
     Move moves[256];
-    uint8_t n = board.generatePseudoLegalMoves(moves);
+    uint8_t n;
+
+    if (select && !ply) {
+        n = select->size();
+
+        for (uint8_t i = 0; i < n; i++) {
+            moves[i] = (*select)[i];
+        }
+    } else {
+        n = board.generatePseudoLegalMoves(moves);
+    }
+
     uint8_t c = 0;
     uint8_t legal = 0;
     int scores[256];
@@ -583,6 +594,10 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
             memcpy(move, &best_move, sizeof(Move));
             memcpy(depth, &d, sizeof(int));
 
+            if (select) {
+                delete select;
+            }
+
             return best_score;
         } else {
             best_score = output;
@@ -592,6 +607,10 @@ int Engine::generateMove (int time, uint8_t min_depth, uint8_t max_depth, Move *
         if (d == max_depth || (getTime() - cts) > (time / 2)) {
             memcpy(move, &best_move, sizeof(Move));
             memcpy(depth, &d, sizeof(int));
+
+            if (select) {
+                delete select;
+            }
 
             return best_score;
         }
@@ -728,13 +747,15 @@ int Engine::generateMove (int wtime, int btime, int winc, int binc, Move *move, 
     int movetime = timeleft / 60 + increment;
     uint8_t min_depth = 5 + std::log(((double) movetime) / 1000) / std::log(5);
 
-    return generateMove(movetime, min_depth, 255, move, depth);
+    return generateMove(movetime, min_depth, 255, NULL, move, depth);
 }
 
 int Engine::generateMove (GenLimits limits, Move *move, int *depth) {
     if (limits.perft != -1) {
         return board.perft(limits.perft);
     }
+
+    select = limits.select;
 
     if (limits.depth != -1 && limits.movetime != -1) {
         return generateMove(limits.movetime, 0, limits.depth, move, depth);

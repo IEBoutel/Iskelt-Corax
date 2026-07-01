@@ -19,6 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #ifndef __ENGINE_HPP__
 #define __ENGINE_HPP__
 
+#include <vector>
+
 #include "board.hpp"
 
 #define TIME_BREAK -INT32_MAX
@@ -48,6 +50,7 @@ typedef struct {
     int depth = -1;
     int movetime = -1;
     int perft = -1;
+    std::vector<Move> *select;
 } GenLimits;
 
 class Engine {
@@ -68,6 +71,8 @@ class Engine {
         uint64_t ip_mask[64] = {0};
         uint64_t dp_mask[64] = {0};
         uint64_t kp_mask[64] = {0};
+
+        std::vector<Move> *select;
 
         Engine (void);
         ~Engine (void);

@@ -161,6 +161,7 @@ class Board {
         uint8_t applyMove (std::string &move);   // UCI (returns 0 if legal, 1 if illegal in second stage, 2 if illegal in first stage)
         void undoMove (void);
         std::string moveToString (Move &move);   // UCI
+        int stringToMove (std::string &move, Move *m);
 
         uint64_t perft (uint8_t n);
 
